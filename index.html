@@ -1285,13 +1285,12 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(20, 24, 41, 0.9) 100%);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
+      background: #ffffff;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
       padding: var(--spacing-xl);
       z-index: 409;
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       min-width: 280px;
       display: none;
     }
@@ -1299,12 +1298,12 @@
     .heatmap-controls.show { display: block; animation: slideUp 200ms ease-out; }
 
     .heatmap-controls h4 {
-      font-family: 'Fira Code', monospace;
-      font-size: 0.8125rem;
+      font-family: Calibri, Arial;
+      font-size: 0.9rem;
       font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--text-muted);
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--primary-dark);
       margin-bottom: var(--spacing-md);
     }
 
@@ -1316,7 +1315,7 @@
 
     .control-label {
       font-size: 0.8rem;
-      color: var(--text-secondary);
+      color: #767676;
       margin-bottom: var(--spacing-sm);
       display: flex;
       justify-content: space-between;
@@ -1325,8 +1324,8 @@
 
     .control-label-value {
       font-weight: 700;
-      color: var(--primary-bright);
-      font-family: 'Fira Code', monospace;
+      color: var(--primary);
+      font-family: Calibri, Arial;
     }
 
     input[type="range"] {
@@ -1370,27 +1369,28 @@
       flex: 1;
       min-width: 60px;
       padding: 6px 8px;
-      background: rgba(30, 41, 59, 0.5);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      color: var(--text-secondary);
+      background: #ffffff;
+      border: 1px solid #cccccc;
+      border-radius: 3px;
+      color: #767676;
       font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition-fast);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0;
+      font-family: Calibri, Arial;
     }
 
     .mode-btn:hover:not(.active) {
-      border-color: var(--primary-bright);
-      color: var(--primary-bright);
-      background: rgba(0, 113, 206, 0.1);
+      border-color: var(--primary);
+      color: var(--primary);
+      background: #f2f2f2;
     }
 
     .mode-btn.active {
-      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
-      border-color: var(--primary-bright);
+      background: var(--primary);
+      border-color: var(--primary);
       color: white;
     }
 
