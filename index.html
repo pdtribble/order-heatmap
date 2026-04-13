@@ -2054,7 +2054,7 @@
   let currentSort = 'name';
 
   // Feature 3: Heatmap Controls
-  let heatSettings = { radius: 22, blur: 18, mode: 'heat' };
+  let heatSettings = { radius: 22, blur: 18, showHeat: true, showPoints: false };
   let markerLayer = null;
 
   // Feature 2: Territory Drawing
@@ -2263,12 +2263,9 @@
   }
 
   function renderHeat(points, isFiltered = false) {
-    // Only clear the current visualization mode's layer
-    if (heatSettings.mode === 'heat') {
-      if (heatLayer) map.removeLayer(heatLayer);
-    } else {
-      if (markerLayer) map.removeLayer(markerLayer);
-    }
+    // Clear both visualization layers
+    if (heatLayer) map.removeLayer(heatLayer);
+    if (markerLayer) map.removeLayer(markerLayer);
 
     currentPts = points;
     // Only store original points if this is not a filtered view
@@ -2276,7 +2273,8 @@
       originalPts = points;
     }
 
-    if (heatSettings.mode === 'heat') {
+    // Render heat layer if enabled
+    if (heatSettings.showHeat) {
       const data = points.map(p => [p[0], p[1], p[2]]);
       heatLayer = L.heatLayer(data, {
         radius: heatSettings.radius,
@@ -2285,7 +2283,10 @@
         max: 1.0,
         gradient: { 0.15: '#0071ce', 0.35: '#0099ff', 0.55: '#ffc220', 0.75: '#ffdd00', 1.0: '#ff4400' },
       }).addTo(map);
-    } else if (heatSettings.mode === 'points') {
+    }
+
+    // Render markers/points layer if enabled
+    if (heatSettings.showPoints) {
       // Limit to 2000 markers for performance; cluster remaining
       const maxMarkers = 2000;
       const pointsToShow = points.length > maxMarkers ? points.slice(0, maxMarkers) : points;
@@ -2803,10 +2804,28 @@
   }
 
   function changeVisualizationMode(mode) {
-    heatSettings.mode = mode;
-    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    if (currentPts.length) renderHeat(currentPts);
+    // Toggle the selected visualization mode
+    if (mode === 'heat') {
+      heatSettings.showHeat = !heatSettings.showHeat;
+    } else if (mode === 'points') {
+      heatSettings.showPoints = !heatSettings.showPoints;
+    }
+
+    // Update button styling based on state
+    const heatBtn = document.querySelector('.mode-btn:nth-child(1)');
+    const pointsBtn = document.querySelector('.mode-btn:nth-child(2)');
+
+    if (heatBtn) {
+      heatBtn.classList.toggle('active', heatSettings.showHeat);
+    }
+    if (pointsBtn) {
+      pointsBtn.classList.toggle('active', heatSettings.showPoints);
+    }
+
+    // Re-render the map with new settings
+    if (currentPts.length) {
+      renderHeat(currentPts);
+    }
   }
 
   // Feature 2: Territory Drawing Functions
