@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Heatmap — Geospatial Visualization</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    /* ── CSS Variables (Design System) ─────────────────────────────────────── */
+    :root {
+      /* Color Palette */
+      --primary:        #3b82f6;      /* Blue */
+      --primary-dark:   #1e40af;      /* Dark Blue */
+      --primary-light:  #dbeafe;      /* Light Blue */
+      --accent:         #f59e0b;      /* Amber */
+      --success:        #10b981;      /* Emerald */
+
+      /* Dark Theme */
+      --bg-base:        #0f172a;      /* Slate-900 */
+      --bg-surface:     #1e293b;      /* Slate-800 */
+      --bg-elevated:    #334155;      /* Slate-700 */
+      --bg-hover:       #475569;      /* Slate-600 */
+
+      /* Text */
+      --text-primary:   #f1f5f9;      /* Slate-100 */
+      --text-secondary: #cbd5e1;      /* Slate-300 */
+      --text-tertiary:  #94a3b8;      /* Slate-400 */
+
+      /* Borders & Effects */
+      --border-color:   #334155;      /* Slate-700 */
+      --border-subtle:  #1e293b;      /* Slate-800 */
+
+      /* Shadows */
+      --shadow-sm:      0 1px 2px rgba(0,0,0,0.5);
+      --shadow-md:      0 4px 6px rgba(0,0,0,0.4);
+      --shadow-lg:      0 8px 16px rgba(0,0,0,0.35);
+      --shadow-xl:      0 16px 32px rgba(0,0,0,0.3);
+
+      /* Spacing */
+      --spacing-xs:     4px;
+      --spacing-sm:     8px;
+      --spacing-md:     12px;
+      --spacing-lg:     16px;
+      --spacing-xl:     24px;
+      --spacing-2xl:    32px;
+
+      /* Border Radius */
+      --radius-sm:      6px;
+      --radius-md:      8px;
+      --radius-lg:      12px;
+      --radius-xl:      16px;
+
+      /* Transitions */
+      --transition:     all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── Reset & Base Styles ───────────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: var(--bg-base);
+      color: var(--text-primary);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ────────────────────────────────────────────────────────────── */
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: var(--bg-base);
+    }
+
+    /* ── Header ────────────────────────────────────────────────────────────── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-lg) var(--spacing-xl);
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      flex-shrink: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-md);
+    }
+
+    .logo svg {
+      width: 24px;
+      height: 24px;
+      color: white;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .header-brand h1 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    .header-brand p {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    /* ── Buttons ───────────────────────────────────────────────────────────── */
+    button {
+      font-family: inherit;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--bg-hover);
+      border-color: var(--primary);
+    }
+
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: var(--radius-md);
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+    }
+
+    .btn-icon:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .btn-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    /* ── Stats Bar ─────────────────────────────────────────────────────────── */
+    #stats-bar {
+      display: none;
+      padding: var(--spacing-lg) var(--spacing-xl);
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      flex-shrink: 0;
+      gap: var(--spacing-xl);
+      flex-wrap: wrap;
+    }
+
+    #stats-bar.visible {
+      display: flex;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--spacing-lg);
+      width: 100%;
+    }
+
+    .stat-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary);
+      background: var(--bg-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .stat-subtext {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+
+    .col-pills {
+      display: flex;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+      margin-top: var(--spacing-md);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid currentColor;
+      background: transparent;
+    }
+
+    .pill-zip {
+      color: #60b4ff;
+      border-color: rgba(96, 180, 255, 0.3);
+      background: rgba(96, 180, 255, 0.1);
+    }
+
+    .pill-city {
+      color: #6ee7b7;
+      border-color: rgba(110, 231, 183, 0.3);
+      background: rgba(110, 231, 183, 0.1);
+    }
+
+    .pill-state {
+      color: #c4b5fd;
+      border-color: rgba(196, 181, 253, 0.3);
+      background: rgba(196, 181, 253, 0.1);
+    }
+
+    /* ── Map Container ─────────────────────────────────────────────────────── */
+    #map-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── Landing Overlay ───────────────────────────────────────────────────── */
+    #landing {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      transition: opacity 300ms ease-out;
+    }
+
+    #landing.gone {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .drop-card {
+      width: min(520px, 90vw);
+      background: var(--bg-surface);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-2xl);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .drop-card:hover {
+      border-color: var(--primary);
+      background: var(--bg-elevated);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .drop-card.over {
+      border-color: var(--accent);
+      background: rgba(245, 158, 11, 0.1);
+      box-shadow: var(--shadow-lg), 0 0 20px rgba(245, 158, 11, 0.2);
+    }
+
+    .drop-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto var(--spacing-xl);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+    }
+
+    .drop-icon svg {
+      width: 40px;
+      height: 40px;
+      color: white;
+    }
+
+    .drop-card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      color: var(--text-primary);
+    }
+
+    .drop-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .btn-main {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: 12px 32px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+
+    .btn-main:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-main:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .btn-main svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .hint {
+      margin-top: var(--spacing-lg);
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ── Loading ───────────────────────────────────────────────────────────── */
+    #loading {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xl);
+      z-index: 600;
+    }
+
+    #loading.on {
+      display: flex;
+    }
+
+    .spinner {
+      width: 56px;
+      height: 56px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--primary);
+      border-right-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #load-msg {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    /* ── Map Controls ──────────────────────────────────────────────────────── */
+    .map-btn {
+      position: absolute;
+      z-index: 410;
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .map-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .map-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    #btn-reset {
+      top: var(--spacing-lg);
+      left: var(--spacing-lg);
+      display: none;
+    }
+
+    #btn-export {
+      top: var(--spacing-lg);
+      left: 140px;
+      display: none;
+    }
+
+    /* ── Legend ────────────────────────────────────────────────────────────── */
+    #legend {
+      display: none;
+      position: absolute;
+      bottom: var(--spacing-xl);
+      right: var(--spacing-lg);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      z-index: 410;
+      min-width: 200px;
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    #legend.on {
+      display: block;
+    }
+
+    #legend h4 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .grad-bar {
+      height: 8px;
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--spacing-md);
+      background: linear-gradient(
+        to right,
+        #0055ff 0%,
+        #00ccff 25%,
+        #00ff88 50%,
+        #ffff00 75%,
+        #ff2200 100%
+      );
+      box-shadow: var(--shadow-sm);
+    }
+
+    .grad-lbl {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    /* ── Toast Notifications ───────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      z-index: 700;
+      transform: translateX(-50%) translateY(100px);
+      background: #dc2626;
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    #toast svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ── Responsive Design ─────────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .header-brand p {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        padding: var(--spacing-md) var(--spacing-lg);
+      }
+
+      .header-brand h1 {
+        font-size: 0.95rem;
+      }
+
+      #stats-bar {
+        padding: var(--spacing-md) var(--spacing-lg);
+        gap: var(--spacing-md);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .drop-card {
+        padding: var(--spacing-xl);
+      }
+
+      .drop-card h2 {
+        font-size: 1.25rem;
+      }
+
+      #btn-export {
+        left: auto;
+        right: 55px;
+      }
+
+      .col-pills {
+        justify-content: center;
+      }
+    }
+
+    /* ── Accessibility ─────────────────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Ensure sufficient color contrast */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-base: #ffffff;
+        --bg-surface: #f8fafc;
+        --bg-elevated: #f1f5f9;
+        --text-primary: #0f172a;
+        --text-secondary: #334155;
+        --text-tertiary: #64748b;
+        --border-color: #e2e8f0;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <!-- ── Header ── -->
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 003 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m0 13V7m-6-4h.01M9 9h.01"/>
+        </svg>
+      </div>
+      <div class="header-brand">
+        <h1>Order Heatmap</h1>
+        <p>Geospatial Visualization</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-primary" onclick="pickFile()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Import Data
+      </button>
+      <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="onFileChosen(this.files[0])" />
+    </div>
+  </header>
+
+  <!-- ── Stats Bar ── -->
+  <div id="stats-bar">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value" id="s-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Geocoded</div>
+        <div class="stat-value" id="s-mapped">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">File Name</div>
+        <div class="stat-value" style="font-size: 1rem; color: var(--text-secondary);" id="s-file">—</div>
+      </div>
+    </div>
+    <div class="col-pills" id="col-pills"></div>
+  </div>
+
+  <!-- ── Map Container ── -->
+  <div id="map-wrap">
+    <div id="map"></div>
+
+    <!-- Landing Overlay -->
+    <div id="landing">
+      <div class="drop-card" id="drop-card"
+           ondragover="event.preventDefault(); this.classList.add('over')"
+           ondragleave="this.classList.remove('over')"
+           ondrop="onDrop(event)">
+        <div class="drop-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+          </svg>
+        </div>
+        <h2>Upload Order Data</h2>
+        <p>
+          Import your order data file to visualize<br>
+          order concentration and density across regions.
+        </p>
+        <button class="btn-main" onclick="pickFile()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Choose File
+        </button>
+        <p class="hint">Supports .xlsx, .xls, or .csv formats</p>
+      </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loading">
+      <div class="spinner"></div>
+      <div id="load-msg">Processing your data…</div>
+    </div>
+
+    <!-- Map Controls -->
+    <button class="map-btn" id="btn-reset" onclick="resetView()">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/>
+      </svg>
+      Reset View
+    </button>
+    <button class="map-btn" id="btn-export" onclick="exportCSV()">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+      </svg>
+      Export
+    </button>
+
+    <!-- Legend -->
+    <div id="legend">
+      <h4>Order Density</h4>
+      <div class="grad-bar"></div>
+      <div class="grad-lbl">
+        <span>Low</span>
+        <span>High</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast"></div>
+
+<!-- Leaflet Libraries -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+<script>
+  /* ── Map Initialization ────────────────────────────────────────────────────── */
+  const map = L.map('map', {
+    center: [38.5, -96],
+    zoom: 5,
+    minZoom: 3,
+    maxZoom: 13,
+    zoomControl: true,
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19,
+  }).addTo(map);
+
+  let heatLayer = null;
+  let currentPts = [];
+  let currentFile = '';
+
+  /* ── File Handling ─────────────────────────────────────────────────────────── */
+  function pickFile() {
+    document.getElementById('file-input').click();
+  }
+
+  function onFileChosen(f) {
+    if (f) handleFile(f);
+  }
+
+  function onDrop(e) {
+    e.preventDefault();
+    document.getElementById('drop-card').classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  }
+
+  document.getElementById('map-wrap').addEventListener('dragover', e => e.preventDefault());
+  document.getElementById('map-wrap').addEventListener('drop', e => {
+    e.preventDefault();
+    const f = e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  });
+
+  /* ── Upload & Process ──────────────────────────────────────────────────────── */
+  async function handleFile(file) {
+    currentFile = file.name;
+    setLoading(true, 'Uploading and parsing file…');
+
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        setLoading(false);
+        toast(data.error || 'Unknown error occurred.');
+        return;
+      }
+
+      setLoading(true, `Rendering ${data.points.length.toLocaleString()} locations…`);
+      await tick();
+
+      renderHeat(data.points);
+      updateStats(data.meta, file.name);
+      setLoading(false);
+      dismissLanding();
+      showControls();
+    } catch (err) {
+      setLoading(false);
+      toast('Could not reach the server. Check your connection.');
+      console.error(err);
+    }
+  }
+
+  /* ── Heatmap Rendering ─────────────────────────────────────────────────────── */
+  function renderHeat(points) {
+    if (heatLayer) map.removeLayer(heatLayer);
+    currentPts = points;
+
+    const data = points.map(p => [p[0], p[1], p[2]]);
+    heatLayer = L.heatLayer(data, {
+      radius: 22,
+      blur: 18,
+      maxZoom: 10,
+      max: 1.0,
+      gradient: {
+        0.15: '#0055ff',
+        0.35: '#00ccff',
+        0.55: '#00ff88',
+        0.75: '#ffff00',
+        1.0: '#ff2200',
+      },
+    }).addTo(map);
+
+    document.getElementById('legend').classList.add('on');
+  }
+
+  /* ── Stats Update ──────────────────────────────────────────────────────────── */
+  function updateStats(meta, fname) {
+    document.getElementById('s-total').textContent = meta.total.toLocaleString();
+    document.getElementById('s-mapped').textContent = meta.geocoded.toLocaleString();
+    document.getElementById('s-file').textContent = fname;
+
+    const pills = document.getElementById('col-pills');
+    pills.innerHTML = '';
+
+    const add = (cls, label, val) => {
+      if (val) {
+        pills.insertAdjacentHTML('beforeend',
+          `<span class="pill ${cls}"><strong>${label}:</strong> ${val}</span>`);
+      }
+    };
+
+    add('pill-zip', 'ZIP', meta.zipCol);
+    add('pill-city', 'City', meta.cityCol);
+    add('pill-state', 'State', meta.stateCol);
+
+    document.getElementById('stats-bar').classList.add('visible');
+  }
+
+  /* ── Controls ──────────────────────────────────────────────────────────────── */
+  function showControls() {
+    document.getElementById('btn-reset').style.display = '';
+    document.getElementById('btn-export').style.display = '';
+  }
+
+  function resetView() {
+    map.flyTo([38.5, -96], 5, { duration: 1.2 });
+  }
+
+  function exportCSV() {
+    if (!currentPts.length) return;
+    const lines = ['latitude,longitude,label'];
+    currentPts.forEach(p => {
+      lines.push(`${p[0]},${p[1]},"${(p[3] || '').replace(/"/g, '""')}"`);
+    });
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/csv' })),
+      download: currentFile.replace(/\.[^.]+$/, '') + '_geocoded.csv',
+    });
+    a.click();
+  }
+
+  /* ── UI Helpers ────────────────────────────────────────────────────────────── */
+  function setLoading(on, msg) {
+    if (msg) document.getElementById('load-msg').textContent = msg;
+    document.getElementById('loading').classList.toggle('on', on);
+  }
+
+  function dismissLanding() {
+    document.getElementById('landing').classList.add('gone');
+  }
+
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.innerHTML = `
+      <svg fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+      </svg>
+      <span>${msg}</span>
+    `;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 4500);
+  }
+
+  function tick() {
+    return new Promise(r => requestAnimationFrame(r));
+  }
+</script>
+</body>
+</html>

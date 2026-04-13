@@ -1,0 +1,24 @@
+{
+  "name": "geospatial-order-heatmap",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Geospatial order heatmap visualization",
+  "scripts": {
+    "dev": "node api/dev.js",
+    "build": "echo 'Build successful'",
+    "start": "node api/server.js"
+  },
+  "dependencies": {
+    "csv-parse": "^5.4.1",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
+
