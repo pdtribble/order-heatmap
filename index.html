@@ -8,11 +8,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #1e40af;
-      --primary-bright: #3b82f6;
-      --primary-light: #60a5fa;
-      --accent: #f59e0b;
-      --accent-light: #fbbf24;
+      --primary: #0071ce;
+      --primary-bright: #0071ce;
+      --primary-light: #0099ff;
+      --accent: #ffc220;
+      --accent-light: #ffd54f;
       --success: #10b981;
       --danger: #ef4444;
       --bg-base: #0a0e27;
@@ -29,7 +29,7 @@
       --shadow-md: 0 4px 12px rgba(0,0,0,0.6);
       --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
       --shadow-xl: 0 12px 48px rgba(0,0,0,0.45);
-      --glow-primary: 0 0 20px rgba(59, 130, 246, 0.3);
+      --glow-primary: 0 0 20px rgba(0, 113, 206, 0.3);
       --spacing-xs: 4px;
       --spacing-sm: 8px;
       --spacing-md: 12px;
@@ -80,7 +80,7 @@
       width: 44px;
       height: 44px;
       border-radius: var(--radius-lg);
-      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -126,13 +126,13 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
       color: white;
-      box-shadow: var(--shadow-md), 0 0 16px rgba(59, 130, 246, 0.2);
+      box-shadow: var(--shadow-md), 0 0 16px rgba(0, 113, 206, 0.2);
     }
     .btn-primary:hover:not(:disabled) {
       background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-bright) 100%);
-      box-shadow: var(--shadow-lg), 0 0 24px rgba(59, 130, 246, 0.4);
+      box-shadow: var(--shadow-lg), 0 0 24px rgba(0, 113, 206, 0.4);
       transform: translateY(-2px);
     }
     .btn-primary:active:not(:disabled) { transform: translateY(0); }
@@ -179,12 +179,12 @@
 
     .resize-handle:hover {
       background: linear-gradient(90deg, transparent 0%, var(--primary-bright) 50%, transparent 100%);
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 12px rgba(0, 113, 206, 0.2);
     }
 
     .resize-handle.active {
       background: linear-gradient(90deg, transparent 0%, var(--primary-bright) 50%, transparent 100%);
-      box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 0 16px rgba(0, 113, 206, 0.4);
     }
 
     .resize-handle-h {
@@ -201,12 +201,12 @@
 
     .resize-handle-h:hover {
       background: linear-gradient(180deg, transparent 0%, var(--primary-bright) 50%, transparent 100%);
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 12px rgba(0, 113, 206, 0.2);
     }
 
     .resize-handle-h.active {
       background: linear-gradient(180deg, transparent 0%, var(--primary-bright) 50%, transparent 100%);
-      box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 0 16px rgba(0, 113, 206, 0.4);
     }
 
     #map-wrap {
@@ -430,7 +430,7 @@
     .order-item:hover {
       background: rgba(30, 41, 59, 0.8);
       border-color: var(--primary-bright);
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+      box-shadow: 0 0 12px rgba(0, 113, 206, 0.15);
       transform: translateX(4px);
     }
 
@@ -467,15 +467,218 @@
 
     .sort-btn:hover:not(.active) {
       border-color: var(--primary-bright);
-      background: rgba(59, 130, 246, 0.1);
+      background: rgba(0, 113, 206, 0.1);
       color: var(--text-primary);
     }
 
     .sort-btn.active {
-      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
       color: white;
       border-color: var(--primary-bright);
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 0 12px rgba(0, 113, 206, 0.3);
+    }
+
+    /* Search Bar Styles */
+    .orders-search {
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px var(--spacing-lg);
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-family: inherit;
+      transition: var(--transition-fast);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-bright);
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: 0 0 12px rgba(0, 113, 206, 0.2);
+    }
+
+    /* Summary Dashboard Styles */
+    .summary-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .summary-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+    }
+
+    .summary-card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .summary-card-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: 'Fira Code', monospace;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .summary-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: rgba(20, 24, 41, 0.5);
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+    }
+
+    .summary-item-label {
+      color: var(--text-secondary);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .summary-item-value {
+      color: var(--primary-bright);
+      font-weight: 600;
+      font-family: 'Fira Code', monospace;
+      margin-left: var(--spacing-md);
+      flex-shrink: 0;
+    }
+
+    .summary-section::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .summary-section::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .summary-section::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 2px;
+    }
+
+    /* Map Controls Menu */
+    .map-controls-menu {
+      position: absolute;
+      top: var(--spacing-xl);
+      right: var(--spacing-xl);
+      z-index: 408;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .map-controls-dropdown {
+      position: relative;
+    }
+
+    .map-controls-toggle {
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
+      color: white;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      transition: var(--transition-fast);
+      box-shadow: var(--shadow-md), var(--glow-primary);
+    }
+
+    .map-controls-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg), var(--glow-primary);
+    }
+
+    .map-controls-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(20, 24, 41, 0.9) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      min-width: 200px;
+      margin-top: var(--spacing-sm);
+      z-index: 420;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: none;
+    }
+
+    .map-controls-dropdown-menu.show {
+      display: block;
+      animation: slideUp 200ms ease-out;
+    }
+
+    .map-controls-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-lg);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      width: 100%;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-family: inherit;
+    }
+
+    .map-controls-item:last-child {
+      border-bottom: none;
+    }
+
+    .map-controls-item:hover {
+      background: rgba(0, 113, 206, 0.1);
+      color: var(--text-primary);
+    }
+
+    .map-controls-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
     }
 
     #landing {
@@ -509,7 +712,7 @@
     .drop-card:hover {
       border-color: var(--primary-bright);
       background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(20, 24, 41, 1) 100%);
-      box-shadow: var(--shadow-xl), 0 0 32px rgba(59, 130, 246, 0.2);
+      box-shadow: var(--shadow-xl), 0 0 32px rgba(0, 113, 206, 0.2);
       transform: translateY(-4px);
     }
 
@@ -592,7 +795,7 @@
       width: 96px;
       height: 96px;
       margin: 0 auto var(--spacing-2xl);
-      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
       border-radius: var(--radius-xl);
       display: flex;
       align-items: center;
@@ -611,14 +814,14 @@
       justify-content: center;
       gap: var(--spacing-sm);
       padding: 14px 36px;
-      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
       color: white;
       border: none;
       border-radius: var(--radius-lg);
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: var(--shadow-lg), 0 0 20px rgba(59, 130, 246, 0.3);
+      box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 113, 206, 0.3);
       transition: var(--transition);
       letter-spacing: 0.3px;
     }
@@ -626,7 +829,7 @@
     .btn-main:hover {
       background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-bright) 100%);
       transform: translateY(-3px);
-      box-shadow: var(--shadow-xl), 0 0 32px rgba(59, 130, 246, 0.5);
+      box-shadow: var(--shadow-xl), 0 0 32px rgba(0, 113, 206, 0.5);
     }
 
     .btn-main:active {
@@ -658,7 +861,7 @@
       border-right-color: var(--primary-bright);
       border-radius: 50%;
       animation: spin 1.2s linear infinite;
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 0 20px rgba(0, 113, 206, 0.3);
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -686,10 +889,10 @@
     }
 
     .map-btn:hover {
-      background: linear-gradient(180deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 41, 59, 0.95) 100%);
+      background: linear-gradient(180deg, rgba(0, 113, 206, 0.2) 0%, rgba(30, 41, 59, 0.95) 100%);
       border-color: var(--primary-bright);
       color: var(--primary-bright);
-      box-shadow: var(--shadow-lg), 0 0 16px rgba(59, 130, 246, 0.2);
+      box-shadow: var(--shadow-lg), 0 0 16px rgba(0, 113, 206, 0.2);
     }
 
     .map-btn svg { width: 16px; height: 16px; }
@@ -722,7 +925,7 @@
       height: 10px;
       border-radius: var(--radius-md);
       margin-bottom: var(--spacing-lg);
-      background: linear-gradient(to right, #0055ff 0%, #00ccff 25%, #00ff88 50%, #ffff00 75%, #ff2200 100%);
+      background: linear-gradient(to right, #0071ce 0%, #0099ff 25%, #ffc220 50%, #ffdd00 75%, #ff4400 100%);
       box-shadow: 0 0 12px rgba(0, 255, 136, 0.2);
     }
 
@@ -1060,16 +1263,17 @@
     /* Feature 3: Heatmap Controls */
     .heatmap-controls {
       position: absolute;
-      bottom: 200px;
-      right: var(--spacing-xl);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(20, 24, 41, 0.9) 100%);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: var(--spacing-lg);
+      padding: var(--spacing-xl);
       z-index: 409;
       backdrop-filter: blur(10px);
       box-shadow: var(--shadow-lg);
-      min-width: 240px;
+      min-width: 280px;
       display: none;
     }
 
@@ -1122,19 +1326,19 @@
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
       cursor: pointer;
-      box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 0 8px rgba(0, 113, 206, 0.4);
     }
 
     input[type="range"]::-moz-range-thumb {
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
       cursor: pointer;
       border: none;
-      box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 0 8px rgba(0, 113, 206, 0.4);
     }
 
     .mode-buttons {
@@ -1162,11 +1366,11 @@
     .mode-btn:hover:not(.active) {
       border-color: var(--primary-bright);
       color: var(--primary-bright);
-      background: rgba(59, 130, 246, 0.1);
+      background: rgba(0, 113, 206, 0.1);
     }
 
     .mode-btn.active {
-      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
       border-color: var(--primary-bright);
       color: white;
     }
@@ -1176,6 +1380,7 @@
       bottom: 120px;
       right: var(--spacing-xl);
       z-index: 409;
+      display: none !important;
     }
 
     /* Feature 5: Export Dropdown */
@@ -1220,12 +1425,12 @@
     .export-menu button:last-child { border-bottom: none; }
 
     .export-menu button:hover {
-      background: rgba(59, 130, 246, 0.1);
+      background: rgba(0, 113, 206, 0.1);
       color: var(--primary-bright);
     }
 
     .export-menu button:active {
-      background: rgba(59, 130, 246, 0.2);
+      background: rgba(0, 113, 206, 0.2);
     }
 
     /* Feature 2: Territory Drawing */
@@ -1310,7 +1515,7 @@
       flex-shrink: 0;
     }
 
-    .comparison-dot.primary { background: #0055ff; }
+    .comparison-dot.primary { background: #0071ce; }
     .comparison-dot.compare { background: #ff6600; }
 
     .comparison-value {
@@ -1344,7 +1549,7 @@
     }
 
     .comparison-toggle.active {
-      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
       border-color: var(--primary-bright);
       color: white;
     }
@@ -1417,9 +1622,8 @@
     }
 
     @media (max-width: 768px) {
-      .heatmap-controls { bottom: 140px; right: var(--spacing-md); }
-      .heatmap-toggle { right: var(--spacing-md); }
-      .territory-draw-btn { left: auto; right: 220px; }
+      .heatmap-controls { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+      .map-controls-menu { top: var(--spacing-md); right: var(--spacing-md); }
       .export-dropdown { position: relative; }
       .export-menu { position: absolute; right: 0; top: 100%; }
       .mobile-tabs.show { display: flex; }
@@ -1513,14 +1717,11 @@
         </div>
 
         <!-- Feature 3: Heatmap Controls -->
-        <button class="map-btn heatmap-toggle" id="heatmap-toggle" onclick="toggleHeatmapControls()" style="display: none;">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-          </svg>
-        </button>
-
         <div class="heatmap-controls" id="heatmap-controls">
-          <h4>Visualization</h4>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+            <h4 style="margin: 0;">Visualization Settings</h4>
+            <button style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.5rem; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;" onclick="toggleHeatmapControls()">×</button>
+          </div>
           <div class="control-group">
             <div class="control-label">
               <span>Radius</span>
@@ -1544,12 +1745,26 @@
           </div>
         </div>
 
-        <!-- Feature 2: Territory Drawing -->
-        <button class="map-btn territory-draw-btn" id="territory-draw-btn" onclick="toggleTerritoryDraw()" style="display: none;">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a6 6 0 016 6v4a6 6 0 016 6v4a2 2 0 01-2 2h-4.5"/>
-          </svg>
-        </button>
+        <!-- Map Controls Menu -->
+        <div class="map-controls-menu" id="map-controls-menu" style="display: none;">
+          <div class="map-controls-dropdown">
+            <button class="map-controls-toggle" id="map-controls-toggle" onclick="toggleMapControlsMenu()">⋮</button>
+            <div class="map-controls-dropdown-menu" id="map-controls-dropdown-menu">
+              <button class="map-controls-item" onclick="toggleHeatmapControls(); closeMapControlsMenu()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                </svg>
+                <span>Visualization Settings</span>
+              </button>
+              <button class="map-controls-item" onclick="toggleTerritoryDraw(); closeMapControlsMenu()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a6 6 0 016 6v4a6 6 0 016 6v4a2 2 0 01-2 2h-4.5"/>
+                </svg>
+                <span>Territory Marking</span>
+              </button>
+            </div>
+          </div>
+        </div>
 
         <div class="territory-info" id="territory-info"></div>
       </div>
@@ -1579,6 +1794,32 @@
         <h3>Orders</h3>
         <span id="order-count-badge" style="font-size: 0.8rem; color: var(--text-tertiary);">0</span>
       </div>
+
+      <div class="summary-section" id="summary-section">
+        <div class="summary-card">
+          <div class="summary-card-title">Top 5 Areas</div>
+          <div class="summary-list" id="top-areas-list"></div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Average Order Value</div>
+          <div class="summary-card-value" id="avg-order-value">$0.00</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title">Top 5 Items</div>
+          <div class="summary-list" id="top-items-list"></div>
+        </div>
+      </div>
+
+      <div class="orders-search">
+        <input
+          type="text"
+          class="search-input"
+          id="orders-search-input"
+          placeholder="Search by PO, location, or item name..."
+          oninput="filterOrders(this.value)"
+        >
+      </div>
+
       <div class="sort-controls">
         <button class="sort-btn active" onclick="sortOrders('name')">By Name</button>
         <button class="sort-btn" onclick="sortOrders('location')">By Location</button>
@@ -2006,7 +2247,7 @@
         blur: heatSettings.blur,
         maxZoom: 10,
         max: 1.0,
-        gradient: { 0.15: '#0055ff', 0.35: '#00ccff', 0.55: '#00ff88', 0.75: '#ffff00', 1.0: '#ff2200' },
+        gradient: { 0.15: '#0071ce', 0.35: '#0099ff', 0.55: '#ffc220', 0.75: '#ffdd00', 1.0: '#ff4400' },
       }).addTo(map);
     } else if (heatSettings.mode === 'points') {
       // Limit to 2000 markers for performance; cluster remaining
@@ -2017,8 +2258,8 @@
       pointsToShow.forEach(p => {
         L.circleMarker([p[0], p[1]], {
           radius: 5,
-          fillColor: '#3b82f6',
-          color: '#1e40af',
+          fillColor: '#0071ce',
+          color: '#004fa3',
           weight: 1,
           opacity: 0.7,
           fillOpacity: 0.5,
@@ -2061,9 +2302,134 @@
     });
 
     ordersData = Object.values(locationMap);
+    updateSummaryStats();
+  }
+
+  function updateSummaryStats() {
+    if (!allRows || allRows.length === 0) return;
+
+    // Top 5 Areas
+    const areaStats = {};
+    allRows.forEach(row => {
+      if (row._label) {
+        areaStats[row._label] = (areaStats[row._label] || 0) + 1;
+      }
+    });
+
+    const topAreas = Object.entries(areaStats)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    const topAreasHtml = topAreas.map(([area, count]) => `
+      <div class="summary-item">
+        <span class="summary-item-label">${escapeHtml(area)}</span>
+        <span class="summary-item-value">${count}</span>
+      </div>
+    `).join('');
+    document.getElementById('top-areas-list').innerHTML = topAreasHtml || '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
+
+    // Average Order Value - look for common value fields
+    let totalValue = 0;
+    let valueCount = 0;
+    const valueFieldNames = ['value', 'amount', 'price', 'total', 'order value', 'order amount'];
+
+    allRows.forEach(row => {
+      for (const fieldName of valueFieldNames) {
+        const key = Object.keys(row).find(k => k.toLowerCase() === fieldName.toLowerCase());
+        if (key && row[key]) {
+          const val = parseFloat(String(row[key]).replace(/[^0-9.]/g, ''));
+          if (!isNaN(val) && val > 0) {
+            totalValue += val;
+            valueCount++;
+            break;
+          }
+        }
+      }
+    });
+
+    const avgValue = valueCount > 0 ? (totalValue / valueCount).toFixed(2) : '0.00';
+    document.getElementById('avg-order-value').textContent = `$${avgValue}`;
+
+    // Top 5 Items - look for common item fields
+    const itemStats = {};
+    const itemFieldNames = ['item', 'product', 'sku', 'description', 'name'];
+
+    allRows.forEach(row => {
+      for (const fieldName of itemFieldNames) {
+        const key = Object.keys(row).find(k => k.toLowerCase() === fieldName.toLowerCase());
+        if (key && row[key]) {
+          const itemName = String(row[key]);
+          if (itemName && itemName.trim()) {
+            itemStats[itemName] = (itemStats[itemName] || 0) + 1;
+            break;
+          }
+        }
+      }
+    });
+
+    const topItems = Object.entries(itemStats)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    const topItemsHtml = topItems.map(([item, count]) => `
+      <div class="summary-item">
+        <span class="summary-item-label">${escapeHtml(item).substring(0, 20)}${escapeHtml(item).length > 20 ? '...' : ''}</span>
+        <span class="summary-item-value">${count}</span>
+      </div>
+    `).join('');
+    document.getElementById('top-items-list').innerHTML = topItemsHtml || '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
+  }
+
+  let filteredOrdersData = [];
+
+  function filterOrders(searchTerm) {
+    const term = searchTerm.toLowerCase().trim();
+
+    if (!term) {
+      filteredOrdersData = [...ordersData];
+    } else {
+      filteredOrdersData = ordersData.filter(order => {
+        // Search in location (area)
+        if (order.location.toLowerCase().includes(term)) return true;
+
+        // Search in related rows for PO number and item names
+        const relatedRows = allRows.filter(r => r._label === order.location);
+        return relatedRows.some(row => {
+          // Search for PO number (common field names)
+          const poNumber = row['PO'] || row['PO#'] || row['PO Number'] || row['Order #'] || row['Order Number'] || '';
+          if (String(poNumber).toLowerCase().includes(term)) return true;
+
+          // Search for item names
+          const itemFieldNames = ['item', 'product', 'sku', 'description', 'name'];
+          for (const fieldName of itemFieldNames) {
+            const key = Object.keys(row).find(k => k.toLowerCase() === fieldName.toLowerCase());
+            if (key && String(row[key]).toLowerCase().includes(term)) return true;
+          }
+
+          return false;
+        });
+      });
+    }
+
+    renderFilteredOrders();
+    document.getElementById('order-count-badge').textContent = filteredOrdersData.length;
+  }
+
+  function renderFilteredOrders() {
+    const list = document.getElementById('orders-list');
+    list.innerHTML = filteredOrdersData.map((order) => `
+      <div class="order-item" onclick="showOrderDetail('${escapeHtml(order.location).replace(/'/g, "\\'")}')" style="cursor: pointer;">
+        <div class="order-info">
+          <div class="order-name">${escapeHtml(order.location)}</div>
+          <div class="order-location">${order.count} order${order.count !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="order-count">${order.count}</div>
+      </div>
+    `).join('');
   }
 
   function populateOrdersList() {
+    filteredOrdersData = [...ordersData];
     sortOrders(currentSort);
   }
 
@@ -2076,7 +2442,7 @@
       if (btnType === type) btn.classList.add('active');
     });
 
-    let sorted = [...ordersData];
+    let sorted = [...filteredOrdersData];
     if (type === 'name') {
       sorted.sort((a, b) => a.location.localeCompare(b.location));
     } else if (type === 'location') {
@@ -2096,7 +2462,7 @@
       </div>
     `).join('');
 
-    document.getElementById('order-count-badge').textContent = ordersData.length;
+    document.getElementById('order-count-badge').textContent = filteredOrdersData.length;
   }
 
   function showOrderDetail(location) {
@@ -2232,11 +2598,30 @@
     document.getElementById('orders-section').style.display = '';
   }
 
+  function toggleMapControlsMenu() {
+    const menu = document.getElementById('map-controls-dropdown-menu');
+    menu.classList.toggle('show');
+  }
+
+  function closeMapControlsMenu() {
+    const menu = document.getElementById('map-controls-dropdown-menu');
+    menu.classList.remove('show');
+  }
+
+  // Close map controls menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('map-controls-dropdown-menu');
+    const toggle = document.getElementById('map-controls-toggle');
+    const controlsMenu = document.getElementById('map-controls-menu');
+    if (controlsMenu && !controlsMenu.contains(e.target)) {
+      menu.classList.remove('show');
+    }
+  });
+
   function showControls() {
     document.getElementById('btn-reset').style.display = '';
     document.getElementById('btn-export').style.display = '';
-    document.getElementById('heatmap-toggle').style.display = '';
-    document.getElementById('territory-draw-btn').style.display = '';
+    document.getElementById('map-controls-menu').style.display = '';
     document.getElementById('btn-compare').style.display = '';
 
     // Show mobile tabs on mobile
