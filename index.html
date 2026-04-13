@@ -2467,8 +2467,13 @@
   }
 
   function updateMapForFilteredData() {
-    const filteredPoints = getFilteredPoints();
-    renderHeat(filteredPoints);
+    // If search is cleared, show all points
+    if (!currentSearchTerm.trim()) {
+      renderHeat(currentPts);
+    } else {
+      const filteredPoints = getFilteredPoints();
+      renderHeat(filteredPoints);
+    }
   }
 
   function renderFilteredOrders() {
