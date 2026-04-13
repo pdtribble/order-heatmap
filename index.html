@@ -591,6 +591,14 @@
       border-radius: 2px;
     }
 
+    /* Summary View in Details Section */
+    .summary-view {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
+      padding-right: var(--spacing-md);
+    }
+
     /* Map Controls Menu */
     .map-controls-menu {
       position: absolute;
@@ -1771,10 +1779,10 @@
 
       <div class="resize-handle-h" id="resize-h" ondragstart="return false"></div>
 
-      <div class="order-details-section" id="order-details-section" style="display: none;">
+      <div class="order-details-section" id="order-details-section">
         <div class="order-details-header">
           <div>
-            <div class="order-details-title" id="detail-title">Order Details</div>
+            <div class="order-details-title" id="detail-title">Statistics</div>
             <div class="order-details-subtitle" id="detail-subtitle"></div>
           </div>
           <button class="order-details-close" onclick="closeOrderDetails()" aria-label="Close order details">
@@ -1783,7 +1791,25 @@
             </svg>
           </button>
         </div>
-        <div class="order-details-content" id="order-details-content"></div>
+
+        <!-- Summary Statistics View -->
+        <div class="order-details-content summary-view" id="summary-view">
+          <div class="summary-card">
+            <div class="summary-card-title">Top 5 Areas</div>
+            <div class="summary-list" id="details-top-areas-list"></div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-card-title">Average Order Value</div>
+            <div class="summary-card-value" id="details-avg-order-value">$0.00</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-card-title">Top 5 Items</div>
+            <div class="summary-list" id="details-top-items-list"></div>
+          </div>
+        </div>
+
+        <!-- Order Details View -->
+        <div class="order-details-content order-view" id="order-view" style="display: none;"></div>
       </div>
     </div>
 
@@ -1793,21 +1819,6 @@
       <div class="orders-header">
         <h3>Orders</h3>
         <span id="order-count-badge" style="font-size: 0.8rem; color: var(--text-tertiary);">0</span>
-      </div>
-
-      <div class="summary-section" id="summary-section">
-        <div class="summary-card">
-          <div class="summary-card-title">Top 5 Areas</div>
-          <div class="summary-list" id="top-areas-list"></div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-card-title">Average Order Value</div>
-          <div class="summary-card-value" id="avg-order-value">$0.00</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-card-title">Top 5 Items</div>
-          <div class="summary-list" id="top-items-list"></div>
-        </div>
       </div>
 
       <div class="orders-search">
@@ -2326,12 +2337,12 @@
         <span class="summary-item-value">${count}</span>
       </div>
     `).join('');
-    document.getElementById('top-areas-list').innerHTML = topAreasHtml || '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
+    document.getElementById('details-top-areas-list').innerHTML = topAreasHtml || '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
 
-    // Average Order Value - look for common value fields
+    // Average Order Value - look for Item Cost or Total fields
     let totalValue = 0;
     let valueCount = 0;
-    const valueFieldNames = ['value', 'amount', 'price', 'total', 'order value', 'order amount'];
+    const valueFieldNames = ['item cost', 'total service cost', 'original price', 'price', 'amount', 'total'];
 
     allRows.forEach(row => {
       for (const fieldName of valueFieldNames) {
@@ -2348,19 +2359,21 @@
     });
 
     const avgValue = valueCount > 0 ? (totalValue / valueCount).toFixed(2) : '0.00';
-    document.getElementById('avg-order-value').textContent = `$${avgValue}`;
+    document.getElementById('details-avg-order-value').textContent = `$${avgValue}`;
 
-    // Top 5 Items - look for common item fields
+    // Top 5 Items - look for Item Description field with fallback
     const itemStats = {};
-    const itemFieldNames = ['item', 'product', 'sku', 'description', 'name'];
+    const itemFieldNames = ['item description', 'description', 'item', 'product', 'name'];
 
     allRows.forEach(row => {
       for (const fieldName of itemFieldNames) {
         const key = Object.keys(row).find(k => k.toLowerCase() === fieldName.toLowerCase());
         if (key && row[key]) {
-          const itemName = String(row[key]);
-          if (itemName && itemName.trim()) {
-            itemStats[itemName] = (itemStats[itemName] || 0) + 1;
+          const itemName = String(row[key]).trim();
+          if (itemName && itemName.length > 0) {
+            // Truncate very long descriptions to first meaningful part
+            const displayName = itemName.length > 60 ? itemName.substring(0, 57) + '...' : itemName;
+            itemStats[displayName] = (itemStats[displayName] || 0) + 1;
             break;
           }
         }
@@ -2373,11 +2386,11 @@
 
     const topItemsHtml = topItems.map(([item, count]) => `
       <div class="summary-item">
-        <span class="summary-item-label">${escapeHtml(item).substring(0, 20)}${escapeHtml(item).length > 20 ? '...' : ''}</span>
+        <span class="summary-item-label" title="${escapeHtml(item)}">${escapeHtml(item)}</span>
         <span class="summary-item-value">${count}</span>
       </div>
     `).join('');
-    document.getElementById('top-items-list').innerHTML = topItemsHtml || '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
+    document.getElementById('details-top-items-list').innerHTML = topItemsHtml || '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
   }
 
   let filteredOrdersData = [];
@@ -2400,7 +2413,7 @@
           if (String(poNumber).toLowerCase().includes(term)) return true;
 
           // Search for item names
-          const itemFieldNames = ['item', 'product', 'sku', 'description', 'name'];
+          const itemFieldNames = ['item description', 'description', 'item', 'product', 'name'];
           for (const fieldName of itemFieldNames) {
             const key = Object.keys(row).find(k => k.toLowerCase() === fieldName.toLowerCase());
             if (key && String(row[key]).toLowerCase().includes(term)) return true;
@@ -2467,8 +2480,9 @@
 
   function showOrderDetail(location) {
     const rows = allRows.filter(r => r._label === location);
+    const orderView = document.getElementById('order-view');
+    const summaryView = document.getElementById('summary-view');
     const detailsSection = document.getElementById('order-details-section');
-    const contentDiv = document.getElementById('order-details-content');
     const mapWrap = document.getElementById('map-wrap');
 
     document.getElementById('detail-title').textContent = location;
@@ -2503,7 +2517,11 @@
       }
     });
 
-    contentDiv.innerHTML = html;
+    orderView.innerHTML = html;
+
+    // Toggle views
+    summaryView.style.display = 'none';
+    orderView.style.display = 'flex';
     detailsSection.style.display = 'flex';
 
     // Reset map-wrap flex to allow resizing
@@ -2513,7 +2531,17 @@
   }
 
   function closeOrderDetails() {
-    document.getElementById('order-details-section').style.display = 'none';
+    const orderView = document.getElementById('order-view');
+    const summaryView = document.getElementById('summary-view');
+    const detailsSection = document.getElementById('order-details-section');
+
+    // Toggle back to summary view
+    orderView.style.display = 'none';
+    summaryView.style.display = 'flex';
+
+    // Reset title to Statistics
+    document.getElementById('detail-title').textContent = 'Statistics';
+    document.getElementById('detail-subtitle').textContent = '';
   }
 
   function closeModal() {
@@ -2594,8 +2622,11 @@
   });
 
   function updateStats(meta) {
-    // Show orders section for order details display
+    // Show orders section and details section with summary statistics
     document.getElementById('orders-section').style.display = '';
+    document.getElementById('order-details-section').style.display = 'flex';
+    document.getElementById('summary-view').style.display = 'flex';
+    document.getElementById('order-view').style.display = 'none';
   }
 
   function toggleMapControlsMenu() {
