@@ -191,6 +191,35 @@
       box-shadow: 0 0 16px rgba(0, 113, 206, 0.4);
     }
 
+    .resize-arrows {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .resize-arrow {
+      width: 12px;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      font-size: 8px;
+      transition: color 200ms ease;
+    }
+
+    .resize-handle:hover .resize-arrow {
+      color: var(--primary-bright);
+    }
+
+    .resize-handle.active .resize-arrow {
+      color: var(--primary-bright);
+    }
+
     .resize-handle-h {
       height: 6px;
       background: linear-gradient(180deg, transparent 0%, var(--border-subtle) 50%, transparent 100%);
@@ -211,6 +240,24 @@
     .resize-handle-h.active {
       background: linear-gradient(180deg, transparent 0%, var(--primary-bright) 50%, transparent 100%);
       box-shadow: 0 0 16px rgba(0, 113, 206, 0.4);
+    }
+
+    .resize-arrows-h {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      width: 100%;
+      pointer-events: none;
+    }
+
+    .resize-handle-h:hover .resize-arrow {
+      color: var(--primary-bright);
+    }
+
+    .resize-handle-h.active .resize-arrow {
+      color: var(--primary-bright);
     }
 
     #map-wrap {
@@ -1788,7 +1835,12 @@
         <div class="territory-info" id="territory-info"></div>
       </div>
 
-      <div class="resize-handle-h" id="resize-h" ondragstart="return false"></div>
+      <div class="resize-handle-h" id="resize-h" ondragstart="return false">
+        <div class="resize-arrows-h">
+          <span class="resize-arrow">▲</span>
+          <span class="resize-arrow">▼</span>
+        </div>
+      </div>
 
       <div class="order-details-section" id="order-details-section">
         <div class="order-details-header">
@@ -1824,7 +1876,12 @@
       </div>
     </div>
 
-    <div class="resize-handle" id="resize-v" ondragstart="return false"></div>
+    <div class="resize-handle" id="resize-v" ondragstart="return false">
+      <div class="resize-arrows">
+        <span class="resize-arrow">◄</span>
+        <span class="resize-arrow">►</span>
+      </div>
+    </div>
 
     <div class="orders-section" id="orders-section" style="display: none;">
       <div class="orders-header">
