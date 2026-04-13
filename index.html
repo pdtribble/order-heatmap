@@ -820,8 +820,11 @@
   function sortOrders(type) {
     currentSort = type;
 
-    document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    document.querySelectorAll('.sort-btn').forEach((btn, idx) => {
+      btn.classList.remove('active');
+      const btnType = ['name', 'location', 'count'][idx];
+      if (btnType === type) btn.classList.add('active');
+    });
 
     let sorted = [...ordersData];
     if (type === 'name') {
