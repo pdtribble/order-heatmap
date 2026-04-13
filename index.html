@@ -1924,8 +1924,9 @@
               <div class="summary-card-title">Top 5 Areas</div>
               <select class="summary-sort-dropdown" id="areas-sort-dropdown" onchange="sortTopAreas(this.value)">
                 <option value="count">By Orders</option>
-                <option value="city">By City</option>
                 <option value="state">By State</option>
+                <option value="city">By City</option>
+                <option value="zip">By Zip</option>
               </select>
             </div>
             <div class="summary-list" id="details-top-areas-list"></div>
@@ -2573,21 +2574,100 @@
       return;
     }
 
-    // Sort based on current mode
-    let sorted = [...topAreasData];
-    if (topAreasSortMode === 'city') {
-      sorted.sort((a, b) => a.city.localeCompare(b.city));
-    } else if (topAreasSortMode === 'state') {
-      sorted.sort((a, b) => a.state.localeCompare(b.state));
+    let displayItems = [];
+
+    if (topAreasSortMode === 'state') {
+      // Group by state and get top 5 states by total orders
+      const stateStats = {};
+      topAreasData.forEach(area => {
+        if (!stateStats[area.state]) {
+          stateStats[area.state] = { state: area.state, count: 0, areas: [] };
+        }
+        stateStats[area.state].count += area.count;
+        stateStats[area.state].areas.push(area);
+      });
+
+      // Get top 5 states and their areas
+      const topStates = Object.values(stateStats)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
+      topStates.forEach(stateData => {
+        // Sort areas within state by count and take top one for display
+        const topArea = stateData.areas.sort((a, b) => b.count - a.count)[0];
+        displayItems.push({
+          location: topArea.location,
+          count: stateData.count,
+          label: `${topArea.state} (${stateData.areas.length} area${stateData.areas.length > 1 ? 's' : ''})`
+        });
+      });
+    } else if (topAreasSortMode === 'city') {
+      // Group by city and get top 5 cities by total orders
+      const cityStats = {};
+      topAreasData.forEach(area => {
+        if (!cityStats[area.city]) {
+          cityStats[area.city] = { city: area.city, count: 0, areas: [] };
+        }
+        cityStats[area.city].count += area.count;
+        cityStats[area.city].areas.push(area);
+      });
+
+      // Get top 5 cities and their areas
+      const topCities = Object.values(cityStats)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
+      topCities.forEach(cityData => {
+        // Sort areas within city by count and take top one for display
+        const topArea = cityData.areas.sort((a, b) => b.count - a.count)[0];
+        displayItems.push({
+          location: topArea.location,
+          count: cityData.count,
+          label: `${topArea.city}, ${topArea.state} (${cityData.areas.length} area${cityData.areas.length > 1 ? 's' : ''})`
+        });
+      });
+    } else if (topAreasSortMode === 'zip') {
+      // Group by zip and get top 5 zips by total orders
+      const zipStats = {};
+      topAreasData.forEach(area => {
+        const zip = area.zip || 'Unknown';
+        if (!zipStats[zip]) {
+          zipStats[zip] = { zip: zip, count: 0, areas: [] };
+        }
+        zipStats[zip].count += area.count;
+        zipStats[zip].areas.push(area);
+      });
+
+      // Get top 5 zips and their areas
+      const topZips = Object.values(zipStats)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
+      topZips.forEach(zipData => {
+        // Sort areas within zip by count and take top one for display
+        const topArea = zipData.areas.sort((a, b) => b.count - a.count)[0];
+        displayItems.push({
+          location: topArea.location,
+          count: zipData.count,
+          label: `${zipData.zip} (${zipData.areas.length} area${zipData.areas.length > 1 ? 's' : ''})`
+        });
+      });
     } else {
       // Default: sort by count (descending)
-      sorted.sort((a, b) => b.count - a.count);
+      displayItems = [...topAreasData]
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5)
+        .map(area => ({
+          location: area.location,
+          count: area.count,
+          label: area.location
+        }));
     }
 
-    const topAreasHtml = sorted.slice(0, 5).map(area => `
+    const topAreasHtml = displayItems.map(item => `
       <div class="summary-item">
-        <span class="summary-item-label">${escapeHtml(area.location)}</span>
-        <span class="summary-item-value">${area.count}</span>
+        <span class="summary-item-label">${escapeHtml(item.label)}</span>
+        <span class="summary-item-value">${item.count}</span>
       </div>
     `).join('');
 
