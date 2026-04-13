@@ -2046,6 +2046,7 @@
 
   let heatLayer = null;
   let currentPts = [];
+  let originalPts = [];
   let currentFile = '';
   let ZIP_DB = null;
   let allRows = [];
@@ -2261,7 +2262,7 @@
     return [null, null, null];
   }
 
-  function renderHeat(points) {
+  function renderHeat(points, isFiltered = false) {
     // Only clear the current visualization mode's layer
     if (heatSettings.mode === 'heat') {
       if (heatLayer) map.removeLayer(heatLayer);
@@ -2270,6 +2271,10 @@
     }
 
     currentPts = points;
+    // Only store original points if this is not a filtered view
+    if (!isFiltered) {
+      originalPts = points;
+    }
 
     if (heatSettings.mode === 'heat') {
       const data = points.map(p => [p[0], p[1], p[2]]);
@@ -2467,12 +2472,12 @@
   }
 
   function updateMapForFilteredData() {
-    // If search is cleared, show all points
+    // If search is cleared, show all original points
     if (!currentSearchTerm.trim()) {
-      renderHeat(currentPts);
+      renderHeat(originalPts, false);
     } else {
       const filteredPoints = getFilteredPoints();
-      renderHeat(filteredPoints);
+      renderHeat(filteredPoints, true);
     }
   }
 
