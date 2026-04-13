@@ -143,12 +143,71 @@
       display: flex;
       flex: 1;
       overflow: hidden;
-      gap: var(--spacing-xl);
+      gap: 0;
       padding: var(--spacing-xl);
       background: var(--bg-base);
+      align-items: stretch;
     }
 
-    .map-section { flex: 1; display: flex; flex-direction: column; gap: var(--spacing-xl); overflow: hidden; }
+    .map-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xl);
+      overflow: hidden;
+      min-width: 200px;
+      position: relative;
+    }
+
+    .content-main {
+      display: flex;
+      flex: 1;
+      gap: var(--spacing-xl);
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .resize-handle {
+      width: 6px;
+      background: linear-gradient(90deg, transparent 0%, var(--border-subtle) 50%, transparent 100%);
+      cursor: col-resize;
+      transition: background-color 200ms ease;
+      flex-shrink: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .resize-handle:hover {
+      background: linear-gradient(90deg, transparent 0%, var(--primary-bright) 50%, transparent 100%);
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+    }
+
+    .resize-handle.active {
+      background: linear-gradient(90deg, transparent 0%, var(--primary-bright) 50%, transparent 100%);
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+    }
+
+    .resize-handle-h {
+      height: 6px;
+      background: linear-gradient(180deg, transparent 0%, var(--border-subtle) 50%, transparent 100%);
+      cursor: row-resize;
+      transition: background-color 200ms ease;
+      flex-shrink: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0 calc(var(--spacing-xl) * -1);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .resize-handle-h:hover {
+      background: linear-gradient(180deg, transparent 0%, var(--primary-bright) 50%, transparent 100%);
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+    }
+
+    .resize-handle-h.active {
+      background: linear-gradient(180deg, transparent 0%, var(--primary-bright) 50%, transparent 100%);
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+    }
 
     #map-wrap {
       flex: 1;
@@ -753,8 +812,11 @@
     }
 
     @media (max-width: 1024px) {
-      .content-area { flex-direction: column; gap: var(--spacing-lg); padding: var(--spacing-lg); }
-      .orders-section { width: 100%; height: 220px; }
+      .content-area { flex-direction: column; }
+      .content-main { flex-direction: column; }
+      .resize-v { display: none; }
+      .resize-handle-h { margin: var(--spacing-xl) calc(var(--spacing-xl) * -1); }
+      .orders-section { width: 100%; height: auto; flex: 0 0 220px; }
       #btn-export { left: 160px; }
     }
 
@@ -763,7 +825,9 @@
       .header-brand p { display: none; }
       .header-brand h1 { font-size: 1rem; }
       .header-right { gap: var(--spacing-md); }
-      .content-area { padding: var(--spacing-lg); gap: var(--spacing-lg); }
+      .content-area { padding: var(--spacing-lg); }
+      .content-main { flex-direction: column; }
+      .resize-v, .resize-handle-h { cursor: not-allowed; opacity: 0.5; }
       .orders-section { height: 200px; }
       .order-details-section { padding: var(--spacing-lg); }
       .order-details-content { max-height: 180px; gap: var(--spacing-lg); }
@@ -1010,10 +1074,11 @@
   </header>
 
   <div class="content-area">
-    <div class="map-section">
-      <div id="map-wrap">
+    <div class="content-main">
+      <div class="map-section">
+        <div id="map-wrap">
         <div id="map"></div>
-        <button class="map-btn" id="btn-reset" onclick="resetView()">
+        <button class="map-btn" id="btn-reset" onclick="resetView()" draggable="false">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/>
           </svg>
@@ -1032,6 +1097,8 @@
         </div>
       </div>
 
+      <div class="resize-handle-h" id="resize-h" ondragstart="return false"></div>
+
       <div class="order-details-section" id="order-details-section" style="display: none;">
         <div class="order-details-header">
           <div>
@@ -1048,6 +1115,8 @@
       </div>
     </div>
 
+    <div class="resize-handle" id="resize-v" ondragstart="return false"></div>
+
     <div class="orders-section" id="orders-section" style="display: none;">
       <div class="orders-header">
         <h3>Orders</h3>
@@ -1059,6 +1128,7 @@
         <button class="sort-btn" onclick="sortOrders('count')">By Count</button>
       </div>
       <div class="orders-list" id="orders-list"></div>
+    </div>
     </div>
   </div>
 
@@ -1527,6 +1597,65 @@
   function closeModal() {
     document.getElementById('detail-modal').classList.remove('show');
   }
+
+  // Resizable panels functionality
+  let isResizingVertical = false;
+  let isResizingHorizontal = false;
+
+  const resizeV = document.getElementById('resize-v');
+  const resizeH = document.getElementById('resize-h');
+  const contentMain = document.querySelector('.content-main');
+  const mapSection = document.querySelector('.map-section');
+  const ordersSection = document.getElementById('orders-section');
+  const detailsSection = document.getElementById('order-details-section');
+
+  // Vertical resize (map + details vs orders)
+  resizeV?.addEventListener('mousedown', (e) => {
+    isResizingVertical = true;
+    resizeV.classList.add('active');
+    e.preventDefault();
+  });
+
+  // Horizontal resize (map vs details)
+  resizeH?.addEventListener('mousedown', (e) => {
+    isResizingHorizontal = true;
+    resizeH.classList.add('active');
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isResizingVertical) {
+      const rect = contentMain.getBoundingClientRect();
+      const newFlex = (e.clientX - rect.left) / rect.width;
+
+      if (newFlex > 0.2 && newFlex < 0.8) {
+        mapSection.style.flex = `${newFlex}`;
+        ordersSection.style.flex = `${1 - newFlex}`;
+      }
+    }
+
+    if (isResizingHorizontal && detailsSection.style.display !== 'none') {
+      const rect = mapSection.getBoundingClientRect();
+      const newHeight = e.clientY - rect.top;
+      const mapWrap = document.getElementById('map-wrap');
+
+      if (newHeight > 100 && newHeight < rect.height - 100) {
+        mapWrap.style.flex = `0 0 ${newHeight}px`;
+        detailsSection.style.flex = '1';
+      }
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (isResizingVertical) {
+      resizeV.classList.remove('active');
+    }
+    if (isResizingHorizontal) {
+      resizeH.classList.remove('active');
+    }
+    isResizingVertical = false;
+    isResizingHorizontal = false;
+  });
 
   function openDataSafetyModal() {
     document.getElementById('data-safety-modal').classList.add('show');
