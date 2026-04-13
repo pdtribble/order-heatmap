@@ -1990,9 +1990,12 @@
   }
 
   function renderHeat(points) {
-    // Clear existing visualization layers
-    if (heatLayer) map.removeLayer(heatLayer);
-    if (markerLayer) map.removeLayer(markerLayer);
+    // Only clear the current visualization mode's layer
+    if (heatSettings.mode === 'heat') {
+      if (heatLayer) map.removeLayer(heatLayer);
+    } else {
+      if (markerLayer) map.removeLayer(markerLayer);
+    }
 
     currentPts = points;
 
@@ -2006,17 +2009,38 @@
         gradient: { 0.15: '#0055ff', 0.35: '#00ccff', 0.55: '#00ff88', 0.75: '#ffff00', 1.0: '#ff2200' },
       }).addTo(map);
     } else if (heatSettings.mode === 'points') {
+      // Limit to 2000 markers for performance; cluster remaining
+      const maxMarkers = 2000;
+      const pointsToShow = points.length > maxMarkers ? points.slice(0, maxMarkers) : points;
+
       markerLayer = L.featureGroup();
-      points.forEach(p => {
+      pointsToShow.forEach(p => {
         L.circleMarker([p[0], p[1]], {
-          radius: 6,
+          radius: 5,
           fillColor: '#3b82f6',
           color: '#1e40af',
           weight: 1,
-          opacity: 0.8,
-          fillOpacity: 0.6,
+          opacity: 0.7,
+          fillOpacity: 0.5,
         }).bindPopup(p[3] || 'Unknown').addTo(markerLayer);
       });
+
+      if (points.length > maxMarkers) {
+        const remaining = document.createElement('div');
+        remaining.textContent = `+${(points.length - maxMarkers).toLocaleString()} more points (zoom in to see)`;
+        remaining.style.position = 'absolute';
+        remaining.style.bottom = '80px';
+        remaining.style.left = '16px';
+        remaining.style.background = 'rgba(30, 41, 59, 0.9)';
+        remaining.style.padding = '8px 12px';
+        remaining.style.borderRadius = '6px';
+        remaining.style.color = '#cbd5e1';
+        remaining.style.fontSize = '0.8rem';
+        remaining.style.zIndex = '405';
+        remaining.style.border = '1px solid rgba(51, 65, 85, 1)';
+        document.getElementById('map-wrap').appendChild(remaining);
+      }
+
       markerLayer.addTo(map);
     }
 
@@ -2434,11 +2458,12 @@
     document.querySelectorAll('.comparison-toggle').forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
 
+    // Use opacity instead of removing/adding layers for efficiency
     if (view === 'primary') {
-      if (compareHeatLayer) map.removeLayer(compareHeatLayer);
+      if (compareHeatLayer) compareHeatLayer.setOpacity(0);
       if (heatLayer) heatLayer.setOpacity(1);
     } else if (view === 'compare') {
-      if (heatLayer) map.removeLayer(heatLayer);
+      if (heatLayer) heatLayer.setOpacity(0);
       if (compareHeatLayer) compareHeatLayer.setOpacity(1);
     } else {
       if (heatLayer) heatLayer.setOpacity(1);
