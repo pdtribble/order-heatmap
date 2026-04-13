@@ -587,13 +587,21 @@
       padding: var(--spacing-lg);
     }
 
+    .summary-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+      gap: var(--spacing-md);
+    }
+
     .summary-card-title {
       font-size: 0.875rem;
       font-weight: 700;
       color: var(--primary-dark);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: var(--spacing-md);
+      margin-bottom: 0;
     }
 
     .summary-card-value {
@@ -668,6 +676,26 @@
       color: white;
       border-color: var(--primary);
       box-shadow: 0 2px 4px rgba(0, 113, 206, 0.2);
+    }
+
+    .summary-sort-dropdown {
+      padding: 4px 10px;
+      background: #f2f2f2;
+      color: #767676;
+      border: 1px solid #e8e8e8;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: Calibri, Arial;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .summary-sort-dropdown:hover {
+      border-color: var(--primary);
+      background: #f9f9f9;
+      color: var(--primary);
     }
 
     .summary-section::-webkit-scrollbar {
@@ -1892,11 +1920,13 @@
         <!-- Summary Statistics View -->
         <div class="order-details-content summary-view" id="summary-view">
           <div class="summary-card">
-            <div class="summary-card-title">Top 5 Areas</div>
-            <div class="summary-sort-controls" id="areas-sort-controls">
-              <button class="summary-sort-btn active" onclick="sortTopAreas('count')">By Orders</button>
-              <button class="summary-sort-btn" onclick="sortTopAreas('city')">By City</button>
-              <button class="summary-sort-btn" onclick="sortTopAreas('state')">By State</button>
+            <div class="summary-card-header">
+              <div class="summary-card-title">Top 5 Areas</div>
+              <select class="summary-sort-dropdown" id="areas-sort-dropdown" onchange="sortTopAreas(this.value)">
+                <option value="count">By Orders</option>
+                <option value="city">By City</option>
+                <option value="state">By State</option>
+              </select>
             </div>
             <div class="summary-list" id="details-top-areas-list"></div>
           </div>
@@ -2566,14 +2596,6 @@
 
   function sortTopAreas(mode) {
     topAreasSortMode = mode;
-
-    // Update button states
-    document.querySelectorAll('#areas-sort-controls .summary-sort-btn').forEach(btn => {
-      btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-
-    // Re-render with new sort
     renderTopAreas();
   }
 
