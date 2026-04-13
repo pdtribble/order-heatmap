@@ -2075,6 +2075,15 @@
   // Feature 10: Mobile Tabs
   let activeMobileTab = 'map';
 
+  // Initialize ResizeObserver for map container to handle dynamic resizing
+  const mapWrapElement = document.getElementById('map-wrap');
+  if (mapWrapElement && typeof ResizeObserver !== 'undefined') {
+    const mapResizeObserver = new ResizeObserver(() => {
+      setTimeout(() => map.invalidateSize(), 50);
+    });
+    mapResizeObserver.observe(mapWrapElement);
+  }
+
   async function loadZipDB() {
     if (!ZIP_DB) {
       try {
@@ -2405,9 +2414,26 @@
   }
 
   let filteredOrdersData = [];
+  let currentSearchTerm = '';
+
+  function getFilteredPoints() {
+    if (!currentSearchTerm.trim()) {
+      return currentPts;
+    }
+
+    // Get locations from filtered orders data
+    const filteredLocations = new Set(filteredOrdersData.map(order => order.location));
+
+    // Filter points to only show those in filtered locations
+    return currentPts.filter(point => {
+      const pointLabel = point[3] || '';
+      return filteredLocations.has(pointLabel);
+    });
+  }
 
   function filterOrders(searchTerm) {
     const term = searchTerm.toLowerCase().trim();
+    currentSearchTerm = searchTerm;
 
     if (!term) {
       filteredOrdersData = [...ordersData];
@@ -2436,7 +2462,13 @@
     }
 
     renderFilteredOrders();
+    updateMapForFilteredData();
     document.getElementById('order-count-badge').textContent = filteredOrdersData.length;
+  }
+
+  function updateMapForFilteredData() {
+    const filteredPoints = getFilteredPoints();
+    renderHeat(filteredPoints);
   }
 
   function renderFilteredOrders() {
@@ -2611,9 +2643,11 @@
   document.addEventListener('mouseup', () => {
     if (isResizingVertical) {
       resizeV.classList.remove('active');
+      setTimeout(() => map.invalidateSize(), 50);
     }
     if (isResizingHorizontal) {
       resizeH.classList.remove('active');
+      setTimeout(() => map.invalidateSize(), 50);
     }
     isResizingVertical = false;
     isResizingHorizontal = false;
@@ -3034,8 +3068,11 @@
     }
   }
 
-  // Handle window resize for responsive tabs
+  // Handle window resize for responsive tabs and map resizing
   window.addEventListener('resize', () => {
+    // Trigger map resize
+    setTimeout(() => map.invalidateSize(), 100);
+
     const mobileTabsContainer = document.getElementById('mobile-tabs');
     if (window.innerWidth <= 768 && ordersData.length > 0) {
       if (!mobileTabsContainer.classList.contains('show')) {
