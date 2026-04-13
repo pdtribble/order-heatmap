@@ -59,7 +59,7 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    #app { display: flex; flex-direction: column; height: 100vh; }
+    #app { display: flex; flex-direction: column; height: 100vh; justify-content: space-between; }
 
     header {
       display: flex;
@@ -615,6 +615,191 @@
       #btn-export { top: var(--spacing-lg); left: 130px; }
     }
 
+    footer {
+      padding: var(--spacing-lg) var(--spacing-2xl);
+      background: linear-gradient(180deg, rgba(20, 24, 41, 0.8) 0%, var(--bg-base) 100%);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-lg);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      font-size: 0.8625rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--primary-bright);
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      color: var(--primary-light);
+      text-decoration: underline;
+    }
+
+    .footer-separator {
+      width: 1px;
+      height: 16px;
+      background: var(--border-color);
+    }
+
+    .data-safety-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 39, 0.92);
+      backdrop-filter: blur(12px);
+      z-index: 1002;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .data-safety-modal.show { display: flex; animation: fadeIn 200ms ease-out; }
+
+    .data-safety-content {
+      background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(20, 24, 41, 0.8) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-2xl);
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+      animation: slideUp 300ms ease-out;
+    }
+
+    .data-safety-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .data-safety-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .data-safety-content::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 3px;
+    }
+
+    .data-safety-content::-webkit-scrollbar-thumb:hover {
+      background: var(--text-tertiary);
+    }
+
+    .data-safety-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--spacing-2xl);
+      gap: var(--spacing-lg);
+    }
+
+    .data-safety-header h2 {
+      font-family: 'Fira Code', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    .data-safety-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.75rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .data-safety-close:hover { color: var(--text-primary); }
+
+    .data-safety-section {
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .data-safety-section:last-child { margin-bottom: 0; }
+
+    .data-safety-section h3 {
+      font-family: 'Fira Code', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary-bright);
+      margin-bottom: var(--spacing-lg);
+      letter-spacing: 0.3px;
+    }
+
+    .data-safety-section p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .data-safety-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .data-safety-section li {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-md);
+      padding-left: var(--spacing-xl);
+      position: relative;
+    }
+
+    .data-safety-section li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .data-safety-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--success);
+      color: var(--success);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--radius-md);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    @media (max-width: 640px) {
+      footer {
+        padding: var(--spacing-lg);
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+        font-size: 0.8rem;
+      }
+
+      .footer-separator {
+        display: none;
+      }
+
+      .data-safety-content {
+        padding: var(--spacing-xl);
+        max-width: 90vw;
+      }
+
+      .data-safety-header h2 {
+        font-size: 1.25rem;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
@@ -715,6 +900,15 @@
       <div class="orders-list" id="orders-list"></div>
     </div>
   </div>
+
+  <footer>
+    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0; color: var(--success);">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span>All data is processed locally on your browser and never stored on our servers.</span>
+    <div class="footer-separator"></div>
+    <a onclick="openDataSafetyModal()">Learn More</a>
+  </footer>
 </div>
 
 <div id="landing">
@@ -758,6 +952,86 @@
 </div>
 
 <div id="toast"></div>
+
+<div class="data-safety-modal" id="data-safety-modal">
+  <div class="data-safety-content">
+    <div class="data-safety-header">
+      <div>
+        <h2>Data Safety & Privacy</h2>
+      </div>
+      <button class="data-safety-close" onclick="closeDataSafetyModal()">&times;</button>
+    </div>
+
+    <div class="data-safety-badge">✓ Client-Side Processing Only</div>
+
+    <div class="data-safety-section">
+      <h3>How Your Data is Protected</h3>
+      <p>
+        Territory Sales Map employs a client-side processing architecture that prioritizes your data security and privacy. All file uploads and data processing occur directly within your web browser—<strong>no data is transmitted to or stored on our servers</strong>.
+      </p>
+    </div>
+
+    <div class="data-safety-section">
+      <h3>Data Processing</h3>
+      <ul>
+        <li>File uploads are parsed exclusively in your browser using XLSX.js and PapaParse</li>
+        <li>Geographic coordinates are matched locally using a reference database</li>
+        <li>Heatmap visualization is rendered in real-time on your device</li>
+        <li>Data export (CSV) is generated locally without server transmission</li>
+      </ul>
+    </div>
+
+    <div class="data-safety-section">
+      <h3>What Gets Transmitted</h3>
+      <p>
+        The only network requests made are:
+      </p>
+      <ul>
+        <li>A public ZIP code reference database (non-sensitive geocoding data)</li>
+        <li>Map tile imagery from OpenStreetMap CDN (map background only)</li>
+      </ul>
+      <p style="margin-top: var(--spacing-lg); color: var(--success); font-weight: 600;">
+        ✓ Your customer data is never transmitted to any server
+      </p>
+    </div>
+
+    <div class="data-safety-section">
+      <h3>Data Retention</h3>
+      <ul>
+        <li>All imported data remains in your browser's memory during your session</li>
+        <li>No data is persisted on disk or servers</li>
+        <li>Closing your browser or navigating away clears all data</li>
+        <li>No cookies, tracking, or analytics of your data are collected</li>
+      </ul>
+    </div>
+
+    <div class="data-safety-section">
+      <h3>Recommended Usage</h3>
+      <p>
+        This application is designed for internal business use with trusted team members. While data never leaves your browser, we recommend:
+      </p>
+      <ul>
+        <li>Using Territory Sales Map within your organization's secure network</li>
+        <li>Limiting access to authorized personnel only</li>
+        <li>Avoiding use of shared or public computers for sensitive data</li>
+        <li>Clearing browser history after working with sensitive information</li>
+      </ul>
+    </div>
+
+    <div class="data-safety-section">
+      <h3>Technical Architecture</h3>
+      <p>
+        Territory Sales Map is built with a zero-server-processing model. Your browser becomes the exclusive processing environment, eliminating risks associated with cloud storage, data centers, or third-party vendors. This architecture ensures complete data sovereignty and privacy.
+      </p>
+    </div>
+
+    <div class="data-safety-section">
+      <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0;">
+        For questions about data privacy and security, please contact your system administrator.
+      </p>
+    </div>
+  </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
@@ -1061,6 +1335,19 @@
   function closeModal() {
     document.getElementById('detail-modal').classList.remove('show');
   }
+
+  function openDataSafetyModal() {
+    document.getElementById('data-safety-modal').classList.add('show');
+  }
+
+  function closeDataSafetyModal() {
+    document.getElementById('data-safety-modal').classList.remove('show');
+  }
+
+  // Close data safety modal when clicking outside
+  document.getElementById('data-safety-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'data-safety-modal') closeDataSafetyModal();
+  });
 
   function updateStats(meta) {
     const rate = meta.total > 0 ? Math.round((meta.geocoded / meta.total) * 100) : 0;
