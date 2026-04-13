@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "npm run build",
   "public": true,
-  "env": [],
+  "env": {},
   "functions": {
     "api/**/*.js": {
       "memory": 3008,
