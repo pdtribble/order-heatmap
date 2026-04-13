@@ -218,12 +218,41 @@
     }
 
     .order-details-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--spacing-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xl);
       max-height: 200px;
       overflow-y: auto;
       padding-right: var(--spacing-md);
+    }
+
+    .order-record {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      background: rgba(30, 41, 59, 0.3);
+    }
+
+    .order-record:first-child {
+      border-top-color: var(--primary-bright);
+      border-top-width: 2px;
+    }
+
+    .order-record-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary-bright);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: var(--spacing-md);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .order-record-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--spacing-lg);
     }
 
     .order-details-content::-webkit-scrollbar {
@@ -737,7 +766,9 @@
       .content-area { padding: var(--spacing-lg); gap: var(--spacing-lg); }
       .orders-section { height: 200px; }
       .order-details-section { padding: var(--spacing-lg); }
-      .order-details-content { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); max-height: 180px; }
+      .order-details-content { max-height: 180px; gap: var(--spacing-lg); }
+      .order-record { padding: var(--spacing-md); }
+      .order-record-fields { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--spacing-md); }
       .detail-field { padding: var(--spacing-md); }
       .orders-list { padding: var(--spacing-md); }
     }
@@ -1458,11 +1489,12 @@
 
     let html = '';
 
-    if (rows.length > 0) {
-      const firstRow = rows[0];
-      Object.entries(firstRow).forEach(([key, value]) => {
-        if (!key.startsWith('_')) {
-          html += `
+    rows.forEach((row, index) => {
+      // Collect non-empty fields
+      let fieldsHtml = '';
+      Object.entries(row).forEach(([key, value]) => {
+        if (!key.startsWith('_') && value !== '' && value !== null && value !== undefined) {
+          fieldsHtml += `
             <div class="detail-field">
               <div class="detail-field-label">${escapeHtml(key)}</div>
               <div class="detail-field-value">${escapeHtml(String(value))}</div>
@@ -1470,7 +1502,19 @@
           `;
         }
       });
-    }
+
+      // Only add the record if it has fields with data
+      if (fieldsHtml) {
+        html += `
+          <div class="order-record">
+            <div class="order-record-number">Order ${index + 1} of ${rows.length}</div>
+            <div class="order-record-fields">
+              ${fieldsHtml}
+            </div>
+          </div>
+        `;
+      }
+    });
 
     contentDiv.innerHTML = html;
     detailsSection.style.display = 'flex';
