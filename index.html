@@ -1056,6 +1056,376 @@
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
+
+    /* Feature 3: Heatmap Controls */
+    .heatmap-controls {
+      position: absolute;
+      bottom: 200px;
+      right: var(--spacing-xl);
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(20, 24, 41, 0.9) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      z-index: 409;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-lg);
+      min-width: 240px;
+      display: none;
+    }
+
+    .heatmap-controls.show { display: block; animation: slideUp 200ms ease-out; }
+
+    .heatmap-controls h4 {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .control-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .control-group:last-child { margin-bottom: 0; }
+
+    .control-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .control-label-value {
+      font-weight: 700;
+      color: var(--primary-bright);
+      font-family: 'Fira Code', monospace;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-subtle);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+    }
+
+    .mode-buttons {
+      display: flex;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+
+    .mode-btn {
+      flex: 1;
+      min-width: 60px;
+      padding: 6px 8px;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mode-btn:hover:not(.active) {
+      border-color: var(--primary-bright);
+      color: var(--primary-bright);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      border-color: var(--primary-bright);
+      color: white;
+    }
+
+    .heatmap-toggle {
+      position: absolute;
+      bottom: 120px;
+      right: var(--spacing-xl);
+      z-index: 409;
+    }
+
+    /* Feature 5: Export Dropdown */
+    .export-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .export-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(20, 24, 41, 0.9) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      min-width: 140px;
+      margin-top: var(--spacing-sm);
+      z-index: 410;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: none;
+    }
+
+    .export-menu.show { display: block; }
+
+    .export-menu button {
+      width: 100%;
+      padding: 10px var(--spacing-lg);
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      text-align: left;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      letter-spacing: 0.2px;
+    }
+
+    .export-menu button:last-child { border-bottom: none; }
+
+    .export-menu button:hover {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--primary-bright);
+    }
+
+    .export-menu button:active {
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    /* Feature 2: Territory Drawing */
+    .territory-draw-btn {
+      position: absolute;
+      top: var(--spacing-xl);
+      left: 300px;
+      z-index: 410;
+    }
+
+    .territory-info {
+      position: absolute;
+      bottom: var(--spacing-xl);
+      left: var(--spacing-xl);
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(20, 24, 41, 0.9) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      z-index: 408;
+      min-width: 180px;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-lg);
+      display: none;
+    }
+
+    .territory-info.show { display: block; }
+
+    .territory-item {
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .territory-item:last-child { border-bottom: none; }
+
+    .territory-name {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .territory-count {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary-bright);
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* Feature 9: Comparison Bar */
+    .comparison-bar {
+      position: fixed;
+      top: 74px;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(90deg, rgba(30, 41, 59, 0.95) 0%, rgba(20, 24, 41, 0.9) 100%);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 999;
+      padding: 0 var(--spacing-2xl);
+      display: none;
+      align-items: center;
+      gap: var(--spacing-2xl);
+      backdrop-filter: blur(10px);
+    }
+
+    .comparison-bar.show { display: flex; }
+
+    .comparison-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .comparison-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .comparison-dot.primary { background: #0055ff; }
+    .comparison-dot.compare { background: #ff6600; }
+
+    .comparison-value {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .comparison-controls {
+      margin-left: auto;
+      display: flex;
+      gap: var(--spacing-md);
+    }
+
+    .comparison-toggle {
+      padding: 6px 12px;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .comparison-toggle:hover:not(.active) {
+      border-color: var(--primary-bright);
+      color: var(--primary-bright);
+    }
+
+    .comparison-toggle.active {
+      background: linear-gradient(135deg, var(--primary-bright) 0%, var(--primary) 100%);
+      border-color: var(--primary-bright);
+      color: white;
+    }
+
+    .comparison-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-fast);
+    }
+
+    .comparison-close:hover {
+      color: var(--text-primary);
+    }
+
+    /* Feature 10: Mobile Tab Navigation */
+    .mobile-tabs {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: linear-gradient(180deg, rgba(20, 24, 41, 0.95) 0%, var(--bg-base) 100%);
+      border-top: 1px solid var(--border-subtle);
+      z-index: 1000;
+      display: none;
+      flex-wrap: nowrap;
+      backdrop-filter: blur(10px);
+    }
+
+    .mobile-tabs.show { display: flex; }
+
+    .mobile-tab {
+      flex: 1;
+      padding: var(--spacing-md);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-top: 3px solid transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .mobile-tab:hover:not(.active) {
+      color: var(--text-secondary);
+    }
+
+    .mobile-tab.active {
+      color: var(--primary-bright);
+      border-top-color: var(--primary-bright);
+    }
+
+    .mobile-tab svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    @media (max-width: 768px) {
+      .heatmap-controls { bottom: 140px; right: var(--spacing-md); }
+      .heatmap-toggle { right: var(--spacing-md); }
+      .territory-draw-btn { left: auto; right: 220px; }
+      .export-dropdown { position: relative; }
+      .export-menu { position: absolute; right: 0; top: 100%; }
+      .mobile-tabs.show { display: flex; }
+      .content-main { margin-bottom: 56px; }
+      .orders-section { height: auto; }
+    }
   </style>
 </head>
 <body>
@@ -1073,6 +1443,12 @@
       </div>
     </div>
     <div class="header-right">
+      <button class="btn btn-primary" id="btn-compare" onclick="enterComparisonMode()" style="display: none;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        Compare
+      </button>
       <button class="btn btn-primary" onclick="pickFile()">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -1080,8 +1456,30 @@
         Import Sales Data
       </button>
       <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="onFileChosen(this.files[0])" />
+      <input type="file" id="compare-file-input" accept=".xlsx,.xls,.csv" onchange="onCompareFileChosen(this.files[0])" style="display: none;" />
     </div>
   </header>
+
+  <!-- Feature 9: Comparison Bar -->
+  <div class="comparison-bar" id="comparison-bar">
+    <div class="comparison-item">
+      <span class="comparison-dot primary"></span>
+      <span>File A: <span class="comparison-value" id="compare-primary-count">0</span> orders</span>
+    </div>
+    <div class="comparison-item">
+      <span class="comparison-dot compare"></span>
+      <span>File B: <span class="comparison-value" id="compare-compare-count">0</span> orders</span>
+    </div>
+    <div class="comparison-item">
+      Overlap: <span class="comparison-value" id="compare-overlap">0</span>
+    </div>
+    <div class="comparison-controls">
+      <button class="comparison-toggle active" onclick="setComparisonView('both')">Both</button>
+      <button class="comparison-toggle" onclick="setComparisonView('primary')">File A</button>
+      <button class="comparison-toggle" onclick="setComparisonView('compare')">File B</button>
+      <button class="comparison-close" onclick="exitComparisonMode()">×</button>
+    </div>
+  </div>
 
   <div class="content-area">
     <div class="content-main">
@@ -1094,17 +1492,66 @@
           </svg>
           Reset
         </button>
-        <button class="map-btn" id="btn-export" onclick="exportCSV()">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          Export
-        </button>
+        <!-- Feature 5: Export Dropdown -->
+        <div class="export-dropdown">
+          <button class="map-btn" id="btn-export" onclick="toggleExportMenu()" style="display: none;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Export
+          </button>
+          <div class="export-menu" id="export-menu">
+            <button onclick="exportCSV()">CSV (Coordinates)</button>
+            <button onclick="exportJSON()">JSON (All Data)</button>
+            <button onclick="exportPDF()">PDF (Map Screenshot)</button>
+          </div>
+        </div>
         <div id="legend">
           <h4>Density</h4>
           <div class="grad-bar"></div>
           <div class="grad-lbl"><span>Low</span><span>High</span></div>
         </div>
+
+        <!-- Feature 3: Heatmap Controls -->
+        <button class="map-btn heatmap-toggle" id="heatmap-toggle" onclick="toggleHeatmapControls()" style="display: none;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+          </svg>
+        </button>
+
+        <div class="heatmap-controls" id="heatmap-controls">
+          <h4>Visualization</h4>
+          <div class="control-group">
+            <div class="control-label">
+              <span>Radius</span>
+              <span class="control-label-value" id="radius-value">22</span>
+            </div>
+            <input type="range" id="heatmap-radius" min="8" max="60" value="22" oninput="updateHeatSettings()">
+          </div>
+          <div class="control-group">
+            <div class="control-label">
+              <span>Blur</span>
+              <span class="control-label-value" id="blur-value">18</span>
+            </div>
+            <input type="range" id="heatmap-blur" min="5" max="40" value="18" oninput="updateHeatSettings()">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Mode</div>
+            <div class="mode-buttons">
+              <button class="mode-btn active" onclick="changeVisualizationMode('heat')">Heat</button>
+              <button class="mode-btn" onclick="changeVisualizationMode('points')">Points</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 2: Territory Drawing -->
+        <button class="map-btn territory-draw-btn" id="territory-draw-btn" onclick="toggleTerritoryDraw()" style="display: none;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a6 6 0 016 6v4a6 6 0 016 6v4a2 2 0 01-2 2h-4.5"/>
+          </svg>
+        </button>
+
+        <div class="territory-info" id="territory-info"></div>
       </div>
 
       <div class="resize-handle-h" id="resize-h" ondragstart="return false"></div>
@@ -1150,6 +1597,28 @@
     <div class="footer-separator"></div>
     <a onclick="openDataSafetyModal()">Learn More</a>
   </footer>
+
+  <!-- Feature 10: Mobile Tab Navigation -->
+  <div class="mobile-tabs" id="mobile-tabs">
+    <button class="mobile-tab active" onclick="switchMobileTab('map')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m0 13V7m-6-4h.01M9 9h.01"/>
+      </svg>
+      Map
+    </button>
+    <button class="mobile-tab" onclick="switchMobileTab('orders')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      Orders
+    </button>
+    <button class="mobile-tab" onclick="switchMobileTab('details')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Details
+    </button>
+  </div>
 </div>
 
 <div id="landing">
@@ -1290,6 +1759,10 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
 
@@ -1315,6 +1788,29 @@
   let allRows = [];
   let ordersData = [];
   let currentSort = 'name';
+
+  // Feature 3: Heatmap Controls
+  let heatSettings = { radius: 22, blur: 18, mode: 'heat' };
+  let markerLayer = null;
+
+  // Feature 2: Territory Drawing
+  let featureGroup = null;
+  let drawControl = null;
+  let territories = [];
+
+  // Feature 5: Export Dropdown
+  let exportMenuOpen = false;
+
+  // Feature 9: Comparison
+  let compareMode = false;
+  let compareRows = [];
+  let comparePts = [];
+  let compareHeatLayer = null;
+  let compareFile = '';
+  let comparisonView = 'both';
+
+  // Feature 10: Mobile Tabs
+  let activeMobileTab = 'map';
 
   async function loadZipDB() {
     if (!ZIP_DB) {
@@ -1494,16 +1990,36 @@
   }
 
   function renderHeat(points) {
+    // Clear existing visualization layers
     if (heatLayer) map.removeLayer(heatLayer);
+    if (markerLayer) map.removeLayer(markerLayer);
+
     currentPts = points;
-    const data = points.map(p => [p[0], p[1], p[2]]);
-    heatLayer = L.heatLayer(data, {
-      radius: 22,
-      blur: 18,
-      maxZoom: 10,
-      max: 1.0,
-      gradient: { 0.15: '#0055ff', 0.35: '#00ccff', 0.55: '#00ff88', 0.75: '#ffff00', 1.0: '#ff2200' },
-    }).addTo(map);
+
+    if (heatSettings.mode === 'heat') {
+      const data = points.map(p => [p[0], p[1], p[2]]);
+      heatLayer = L.heatLayer(data, {
+        radius: heatSettings.radius,
+        blur: heatSettings.blur,
+        maxZoom: 10,
+        max: 1.0,
+        gradient: { 0.15: '#0055ff', 0.35: '#00ccff', 0.55: '#00ff88', 0.75: '#ffff00', 1.0: '#ff2200' },
+      }).addTo(map);
+    } else if (heatSettings.mode === 'points') {
+      markerLayer = L.featureGroup();
+      points.forEach(p => {
+        L.circleMarker([p[0], p[1]], {
+          radius: 6,
+          fillColor: '#3b82f6',
+          color: '#1e40af',
+          weight: 1,
+          opacity: 0.8,
+          fillOpacity: 0.6,
+        }).bindPopup(p[3] || 'Unknown').addTo(markerLayer);
+      });
+      markerLayer.addTo(map);
+    }
+
     document.getElementById('legend').classList.add('on');
   }
 
@@ -1695,6 +2211,15 @@
   function showControls() {
     document.getElementById('btn-reset').style.display = '';
     document.getElementById('btn-export').style.display = '';
+    document.getElementById('heatmap-toggle').style.display = '';
+    document.getElementById('territory-draw-btn').style.display = '';
+    document.getElementById('btn-compare').style.display = '';
+
+    // Show mobile tabs on mobile
+    if (window.innerWidth <= 768) {
+      document.getElementById('mobile-tabs').classList.add('show');
+      switchMobileTab('map');
+    }
   }
 
   function resetView() {
@@ -1712,6 +2237,226 @@
       download: currentFile.replace(/\.[^.]+$/, '') + '_geocoded.csv',
     });
     a.click();
+    closeExportMenu();
+  }
+
+  // Feature 5: Export Functions
+  function toggleExportMenu() {
+    exportMenuOpen = !exportMenuOpen;
+    document.getElementById('export-menu').classList.toggle('show', exportMenuOpen);
+  }
+
+  function closeExportMenu() {
+    exportMenuOpen = false;
+    document.getElementById('export-menu').classList.remove('show');
+  }
+
+  function exportJSON() {
+    if (!allRows.length) return;
+    const data = allRows.filter(r => r._lat).map(row => {
+      const obj = { ...row };
+      return obj;
+    });
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })),
+      download: currentFile.replace(/\.[^.]+$/, '') + '_geocoded.json',
+    });
+    a.click();
+    closeExportMenu();
+  }
+
+  function exportPDF() {
+    if (!currentPts.length) return;
+    setLoading(true, 'Generating PDF...');
+    setTimeout(() => {
+      html2canvas(document.getElementById('map'), { scale: 2, useCORS: true }).then(canvas => {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('landscape', 'mm', 'a4');
+        const imgData = canvas.toDataURL('image/png');
+        pdf.addImage(imgData, 'PNG', 10, 10, 190, 130);
+
+        // Add summary
+        pdf.setFontSize(14);
+        pdf.text('Territory Sales Map Report', 10, 155);
+        pdf.setFontSize(10);
+        pdf.text(`File: ${currentFile}`, 10, 165);
+        pdf.text(`Total Orders: ${allRows.filter(r => r._lat).length}`, 10, 172);
+        pdf.text(`Unique Locations: ${ordersData.length}`, 10, 179);
+        pdf.text(`Generated: ${new Date().toLocaleString()}`, 10, 186);
+
+        pdf.save(currentFile.replace(/\.[^.]+$/, '') + '_report.pdf');
+        setLoading(false);
+      }).catch(err => {
+        console.error('PDF generation failed:', err);
+        toast('Failed to generate PDF');
+        setLoading(false);
+      });
+    }, 100);
+  }
+
+  // Feature 3: Heatmap Control Functions
+  function toggleHeatmapControls() {
+    document.getElementById('heatmap-controls').classList.toggle('show');
+  }
+
+  function updateHeatSettings() {
+    heatSettings.radius = parseInt(document.getElementById('heatmap-radius').value);
+    heatSettings.blur = parseInt(document.getElementById('heatmap-blur').value);
+    document.getElementById('radius-value').textContent = heatSettings.radius;
+    document.getElementById('blur-value').textContent = heatSettings.blur;
+    if (currentPts.length) renderHeat(currentPts);
+  }
+
+  function changeVisualizationMode(mode) {
+    heatSettings.mode = mode;
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    if (currentPts.length) renderHeat(currentPts);
+  }
+
+  // Feature 2: Territory Drawing Functions
+  function toggleTerritoryDraw() {
+    if (!currentPts.length) {
+      toast('Load data first before drawing territories');
+      return;
+    }
+    // Simple implementation: toggle between draw mode on/off
+    if (!featureGroup) {
+      featureGroup = new L.FeatureGroup();
+      map.addLayer(featureGroup);
+      drawControl = new L.Control.Draw({
+        draw: { polygon: true, rectangle: false, polyline: false, circle: false, marker: false, circlemarker: false },
+        edit: { featureGroup: featureGroup, remove: true },
+      });
+      map.addControl(drawControl);
+    }
+  }
+
+  function pointInPolygon(point, polygon) {
+    const [x, y] = point;
+    let inside = false;
+    const coords = polygon.getLatLngs();
+    for (let i = 0, j = coords.length - 1; i < coords.length; j = i++) {
+      const xi = coords[i].lat, yi = coords[i].lng;
+      const xj = coords[j].lat, yj = coords[j].lng;
+      const intersect = ((yi > y) !== (yj > y)) && (x < ((xj - xi) * (y - yi) / (yj - yi) + xi));
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+
+  // Feature 9: Comparison Mode Functions
+  function enterComparisonMode() {
+    compareMode = true;
+    document.getElementById('btn-compare').style.display = 'none';
+    document.getElementById('compare-file-input').click();
+  }
+
+  function exitComparisonMode() {
+    compareMode = false;
+    compareRows = [];
+    comparePts = [];
+    if (compareHeatLayer) map.removeLayer(compareHeatLayer);
+    compareHeatLayer = null;
+    document.getElementById('comparison-bar').classList.remove('show');
+    document.getElementById('btn-compare').style.display = '';
+    renderHeat(currentPts);
+  }
+
+  function onCompareFileChosen(f) {
+    if (f) handleCompareFile(f);
+  }
+
+  async function handleCompareFile(file) {
+    compareFile = file.name;
+    setLoading(true, 'Loading comparison file…');
+    try {
+      // Save original data
+      const savedRows = allRows;
+      const savedCurrentPts = currentPts;
+
+      // Parse comparison file
+      const data = await parseFileClient(file);
+
+      // Restore original data
+      const tempCompareRows = allRows;
+      allRows = savedRows;
+
+      if (data.error) {
+        setLoading(false);
+        toast(data.error);
+        return;
+      }
+
+      comparePts = data.points;
+      compareRows = tempCompareRows;
+      renderComparisonHeatmap();
+      updateComparisonBar();
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      toast('Error processing comparison file');
+      console.error(err);
+    }
+  }
+
+  function renderComparisonHeatmap() {
+    if (compareHeatLayer) map.removeLayer(compareHeatLayer);
+    const data = comparePts.map(p => [p[0], p[1], p[2]]);
+    compareHeatLayer = L.heatLayer(data, {
+      radius: heatSettings.radius,
+      blur: heatSettings.blur,
+      maxZoom: 10,
+      max: 1.0,
+      gradient: { 0.15: '#ff6600', 0.5: '#ff9900', 1.0: '#ffcc00' },
+    }).addTo(map);
+  }
+
+  function updateComparisonBar() {
+    document.getElementById('comparison-bar').classList.add('show');
+    document.getElementById('compare-primary-count').textContent = currentPts.length;
+    document.getElementById('compare-compare-count').textContent = comparePts.length;
+
+    // Calculate overlap (simplified: count unique locations in both)
+    const primaryLabels = new Set(currentPts.map(p => p[3]));
+    const compareLabels = new Set(comparePts.map(p => p[3]));
+    const overlap = [...primaryLabels].filter(l => compareLabels.has(l)).length;
+    document.getElementById('compare-overlap').textContent = overlap;
+  }
+
+  function setComparisonView(view) {
+    comparisonView = view;
+    document.querySelectorAll('.comparison-toggle').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    if (view === 'primary') {
+      if (compareHeatLayer) map.removeLayer(compareHeatLayer);
+      if (heatLayer) heatLayer.setOpacity(1);
+    } else if (view === 'compare') {
+      if (heatLayer) map.removeLayer(heatLayer);
+      if (compareHeatLayer) compareHeatLayer.setOpacity(1);
+    } else {
+      if (heatLayer) heatLayer.setOpacity(1);
+      if (compareHeatLayer) compareHeatLayer.setOpacity(1);
+    }
+  }
+
+  // Feature 10: Mobile Tab Navigation
+  function switchMobileTab(tab) {
+    activeMobileTab = tab;
+    document.querySelectorAll('.mobile-tab').forEach(btn => btn.classList.remove('active'));
+    event.target.closest('.mobile-tab').classList.add('active');
+
+    const mapSection = document.getElementById('map-wrap');
+    const ordersSection = document.getElementById('orders-section');
+    const detailsSection = document.getElementById('order-details-section');
+
+    mapSection.style.display = tab === 'map' ? 'flex' : 'none';
+    ordersSection.style.display = tab === 'orders' ? 'flex' : 'none';
+    detailsSection.style.display = tab === 'details' ? 'flex' : 'none';
+
+    // Trigger map resize if switching to map tab
+    if (tab === 'map') setTimeout(() => map.invalidateSize(), 100);
   }
 
   function setLoading(on, msg) {
@@ -1742,6 +2487,102 @@
 
   document.getElementById('detail-modal').addEventListener('click', (e) => {
     if (e.target.id === 'detail-modal') closeModal();
+  });
+
+  // Feature 2: Initialize Territory Drawing
+  map.on('draw:created', (e) => {
+    if (!featureGroup) return;
+    const layer = e.layer;
+    featureGroup.addLayer(layer);
+
+    // Count points in polygon
+    let count = 0;
+    currentPts.forEach(point => {
+      if (pointInPolygon([point[0], point[1]], layer)) {
+        count++;
+      }
+    });
+
+    layer.bindPopup(`<strong>Territory</strong><br>${count} orders`).openPopup();
+    territories.push({ layer, count });
+    updateTerritoryInfo();
+  });
+
+  map.on('draw:deleted', () => {
+    territories = territories.filter(t => featureGroup.hasLayer(t.layer));
+    updateTerritoryInfo();
+  });
+
+  function updateTerritoryInfo() {
+    const infoDiv = document.getElementById('territory-info');
+    if (territories.length === 0) {
+      infoDiv.classList.remove('show');
+      return;
+    }
+    infoDiv.classList.add('show');
+    infoDiv.innerHTML = territories.map((t, i) => `
+      <div class="territory-item">
+        <span class="territory-name">Territory ${i + 1}</span>
+        <span class="territory-count">${t.count}</span>
+      </div>
+    `).join('');
+  }
+
+  // Feature 5: Close export menu on click outside
+  document.addEventListener('click', (e) => {
+    const exportDropdown = document.querySelector('.export-dropdown');
+    const exportMenu = document.getElementById('export-menu');
+    const exportBtn = document.getElementById('btn-export');
+    if (!exportDropdown.contains(e.target)) {
+      exportMenu.classList.remove('show');
+      exportMenuOpen = false;
+    }
+  });
+
+  // Feature 10: Mobile Tab Swipe Support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const tabs = ['map', 'orders', 'details'];
+  const contentArea = document.querySelector('.content-area');
+
+  contentArea.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, false);
+
+  contentArea.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, false);
+
+  function handleSwipe() {
+    if (!document.getElementById('mobile-tabs').classList.contains('show')) return;
+
+    const currentIndex = tabs.indexOf(activeMobileTab);
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && currentIndex < tabs.length - 1) {
+        switchMobileTab(tabs[currentIndex + 1]);
+      } else if (diff < 0 && currentIndex > 0) {
+        switchMobileTab(tabs[currentIndex - 1]);
+      }
+    }
+  }
+
+  // Handle window resize for responsive tabs
+  window.addEventListener('resize', () => {
+    const mobileTabsContainer = document.getElementById('mobile-tabs');
+    if (window.innerWidth <= 768 && ordersData.length > 0) {
+      if (!mobileTabsContainer.classList.contains('show')) {
+        mobileTabsContainer.classList.add('show');
+      }
+    } else if (window.innerWidth > 768) {
+      mobileTabsContainer.classList.remove('show');
+      // Reset layout
+      document.getElementById('map-wrap').style.display = '';
+      document.getElementById('orders-section').style.display = '';
+      document.getElementById('order-details-section').style.display = '';
+    }
   });
 </script>
 </body>
