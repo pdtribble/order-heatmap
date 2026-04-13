@@ -10,26 +10,30 @@
     :root {
       --primary: #0071ce;
       --primary-bright: #0071ce;
-      --primary-light: #0099ff;
+      --primary-light: #007dc6;
+      --primary-dark: #004c97;
       --accent: #ffc220;
       --accent-light: #ffd54f;
-      --success: #10b981;
-      --danger: #ef4444;
-      --bg-base: #0a0e27;
-      --bg-surface: #141829;
-      --bg-elevated: #1e293b;
-      --bg-hover: #334155;
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --text-tertiary: #94a3b8;
-      --text-muted: #64748b;
-      --border-color: #1e293b;
-      --border-subtle: #334155;
+      --success: #367c2b;
+      --danger: #f47321;
+      --sky-blue: #78b9e7;
+      --bg-base: #f2f2f2;
+      --bg-surface: #ffffff;
+      --bg-elevated: #f9f9f9;
+      --bg-hover: #e8e8e8;
+      --bg-stripe: #f2f2f2;
+      --text-primary: #333333;
+      --text-secondary: #767676;
+      --text-tertiary: #999999;
+      --text-muted: #cccccc;
+      --text-inverse: #ffffff;
+      --border-color: #cccccc;
+      --border-subtle: #e8e8e8;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.8);
       --shadow-md: 0 4px 12px rgba(0,0,0,0.6);
       --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
       --shadow-xl: 0 12px 48px rgba(0,0,0,0.45);
-      --glow-primary: 0 0 20px rgba(0, 113, 206, 0.3);
+      --glow-primary: 0 0 16px rgba(0, 113, 206, 0.25);
       --spacing-xs: 4px;
       --spacing-sm: 8px;
       --spacing-md: 12px;
@@ -51,12 +55,13 @@
 
     html, body {
       height: 100%;
-      font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: Calibri, Arial, 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-base);
       color: var(--text-primary);
       overflow: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      font-size: 11px;
     }
 
     #app { display: flex; flex-direction: column; height: 100vh; justify-content: space-between; }
@@ -66,12 +71,11 @@
       align-items: center;
       justify-content: space-between;
       padding: var(--spacing-lg) var(--spacing-2xl);
-      background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(20, 24, 41, 0.8) 100%);
-      border-bottom: 1px solid var(--border-subtle);
+      background: var(--primary-dark);
+      border-bottom: 2px solid #003580;
       flex-shrink: 0;
       z-index: 1000;
-      box-shadow: var(--shadow-sm);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .header-left { display: flex; align-items: center; gap: var(--spacing-xl); }
@@ -80,12 +84,12 @@
       width: 44px;
       height: 44px;
       border-radius: var(--radius-lg);
-      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
+      background: var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: var(--shadow-md), var(--glow-primary);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       transition: var(--transition-fast);
     }
 
@@ -97,8 +101,8 @@
     .logo svg { width: 24px; height: 24px; color: white; }
 
     .header-brand { display: flex; flex-direction: column; gap: 2px; }
-    .header-brand h1 { font-family: 'Fira Code', monospace; font-size: 1.125rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; }
-    .header-brand p { font-size: 0.8125rem; color: var(--text-muted); font-weight: 500; letter-spacing: 0.3px; }
+    .header-brand h1 { font-family: Calibri, Arial; font-size: 1.125rem; font-weight: 700; color: var(--text-inverse); letter-spacing: -0.5px; }
+    .header-brand p { font-size: 0.8125rem; color: rgba(255, 255, 255, 0.9); font-weight: 500; letter-spacing: 0.3px; }
 
     .header-right { display: flex; align-items: center; gap: var(--spacing-lg); }
 
@@ -126,14 +130,14 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
+      background: var(--primary);
       color: white;
-      box-shadow: var(--shadow-md), 0 0 16px rgba(0, 113, 206, 0.2);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .btn-primary:hover:not(:disabled) {
-      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-bright) 100%);
-      box-shadow: var(--shadow-lg), 0 0 24px rgba(0, 113, 206, 0.4);
-      transform: translateY(-2px);
+      background: var(--primary-light);
+      box-shadow: 0 4px 8px rgba(0, 113, 206, 0.2);
+      transform: translateY(-1px);
     }
     .btn-primary:active:not(:disabled) { transform: translateY(0); }
 
@@ -145,7 +149,7 @@
       overflow: hidden;
       gap: 0;
       padding: var(--spacing-xl);
-      background: var(--bg-base);
+      background: #f2f2f2;
       align-items: stretch;
     }
 
@@ -370,24 +374,24 @@
       display: flex;
       flex-direction: column;
       gap: 0;
-      background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(20, 24, 41, 0.6) 100%);
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-subtle);
+      background: var(--primary-dark);
+      border-radius: 4px;
+      border: 1px solid #003580;
       overflow: hidden;
-      box-shadow: var(--shadow-xl);
-      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .orders-header {
-      padding: var(--spacing-xl);
-      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid #003580;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
+      background: var(--primary-dark);
     }
 
-    .orders-header h3 { font-family: 'Fira Code', monospace; font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; }
+    .orders-header h3 { font-family: Calibri, Arial; font-size: 1rem; font-weight: 700; letter-spacing: 0; color: white; }
 
     .orders-list {
       flex: 1;
@@ -416,10 +420,9 @@
     }
 
     .order-item {
-      padding: var(--spacing-lg);
-      background: rgba(30, 41, 59, 0.5);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: #ffffff;
+      border-bottom: 1px solid #e8e8e8;
       cursor: pointer;
       transition: var(--transition);
       display: flex;
@@ -427,87 +430,95 @@
       align-items: center;
     }
 
+    .order-item:nth-child(even) {
+      background: #f2f2f2;
+    }
+
     .order-item:hover {
-      background: rgba(30, 41, 59, 0.8);
-      border-color: var(--primary-bright);
-      box-shadow: 0 0 12px rgba(0, 113, 206, 0.15);
-      transform: translateX(4px);
+      background: #78b9e7;
+    }
+
+    .order-item:nth-child(even):hover {
+      background: #78b9e7;
     }
 
     .order-item:active {
-      transform: translateX(2px);
+      opacity: 0.9;
     }
 
     .order-info { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-    .order-name { font-size: 0.9125rem; font-weight: 600; color: var(--text-primary); }
-    .order-location { font-size: 0.8rem; color: var(--text-tertiary); font-weight: 500; }
-    .order-count { font-size: 1rem; font-weight: 700; color: var(--primary-bright); min-width: 48px; text-align: right; font-family: 'Fira Code', monospace; }
+    .order-name { font-size: 0.9rem; font-weight: 600; color: #333333; }
+    .order-location { font-size: 0.8rem; color: #767676; font-weight: 500; }
+    .order-count { font-size: 0.9rem; font-weight: 700; color: var(--primary); min-width: 48px; text-align: right; font-family: Calibri, Arial; }
 
     .sort-controls {
-      padding: var(--spacing-lg);
-      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-bottom: 1px solid #e8e8e8;
       display: flex;
       gap: var(--spacing-md);
       flex-shrink: 0;
+      background: white;
     }
 
     .sort-btn {
-      padding: 8px 14px;
-      background: rgba(30, 41, 59, 0.5);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      font-size: 0.8125rem;
+      padding: 6px 12px;
+      background: #ffffff;
+      color: #767676;
+      border: 1px solid #cccccc;
+      border-radius: 3px;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition-fast);
       white-space: nowrap;
-      letter-spacing: 0.2px;
+      letter-spacing: 0;
+      font-family: Calibri, Arial;
     }
 
     .sort-btn:hover:not(.active) {
-      border-color: var(--primary-bright);
-      background: rgba(0, 113, 206, 0.1);
-      color: var(--text-primary);
+      border-color: var(--primary);
+      background: #f2f2f2;
+      color: var(--primary);
     }
 
     .sort-btn.active {
-      background: linear-gradient(135deg, var(--primary-bright) 0%, #004fa3 100%);
+      background: var(--primary);
       color: white;
-      border-color: var(--primary-bright);
-      box-shadow: 0 0 12px rgba(0, 113, 206, 0.3);
+      border-color: var(--primary);
+      box-shadow: 0 2px 4px rgba(0, 113, 206, 0.2);
     }
 
     /* Search Bar Styles */
     .orders-search {
-      padding: var(--spacing-lg);
-      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-bottom: 1px solid #e8e8e8;
       display: flex;
       align-items: center;
       flex-shrink: 0;
+      background: white;
     }
 
     .search-input {
       width: 100%;
-      padding: 10px var(--spacing-lg);
-      background: rgba(30, 41, 59, 0.6);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      color: var(--text-primary);
+      padding: 8px var(--spacing-md);
+      background: #ffffff;
+      border: 1px solid #cccccc;
+      border-radius: 3px;
+      color: #333333;
       font-size: 0.875rem;
-      font-family: inherit;
+      font-family: Calibri, Arial;
       transition: var(--transition-fast);
     }
 
     .search-input::placeholder {
-      color: var(--text-muted);
+      color: #999999;
     }
 
     .search-input:focus {
       outline: none;
-      border-color: var(--primary-bright);
-      background: rgba(30, 41, 59, 0.9);
-      box-shadow: 0 0 12px rgba(0, 113, 206, 0.2);
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 4px rgba(0, 113, 206, 0.2);
     }
 
     /* Summary Dashboard Styles */
