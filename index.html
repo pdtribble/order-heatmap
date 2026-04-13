@@ -623,9 +623,9 @@
     .summary-item-label {
       color: var(--text-secondary);
       flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      padding-right: var(--spacing-sm);
     }
 
     .summary-item-value {
@@ -634,6 +634,40 @@
       font-family: Calibri, Arial;
       margin-left: var(--spacing-md);
       flex-shrink: 0;
+    }
+
+    .summary-sort-controls {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+      flex-wrap: wrap;
+    }
+
+    .summary-sort-btn {
+      padding: 4px 10px;
+      background: #f2f2f2;
+      color: #767676;
+      border: 1px solid #e8e8e8;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+      font-family: Calibri, Arial;
+    }
+
+    .summary-sort-btn:hover:not(.active) {
+      border-color: var(--primary);
+      background: #f9f9f9;
+      color: var(--primary);
+    }
+
+    .summary-sort-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 4px rgba(0, 113, 206, 0.2);
     }
 
     .summary-section::-webkit-scrollbar {
@@ -1859,6 +1893,11 @@
         <div class="order-details-content summary-view" id="summary-view">
           <div class="summary-card">
             <div class="summary-card-title">Top 5 Areas</div>
+            <div class="summary-sort-controls" id="areas-sort-controls">
+              <button class="summary-sort-btn active" onclick="sortTopAreas('count')">By Orders</button>
+              <button class="summary-sort-btn" onclick="sortTopAreas('city')">By City</button>
+              <button class="summary-sort-btn" onclick="sortTopAreas('state')">By State</button>
+            </div>
             <div class="summary-list" id="details-top-areas-list"></div>
           </div>
           <div class="summary-card">
@@ -2109,6 +2148,10 @@
   let allRows = [];
   let ordersData = [];
   let currentSort = 'name';
+
+  // Summary Statistics Sorting
+  let topAreasSortMode = 'count';
+  let topAreasData = [];
 
   // Feature 3: Heatmap Controls
   let heatSettings = { radius: 22, blur: 18, showHeat: true, showPoints: false };
@@ -2399,6 +2442,23 @@
     updateSummaryStats();
   }
 
+  function parseLocationData(location) {
+    // Parse "City, State" or "City, State Zip" format
+    const parts = location.split(',');
+    let city = parts[0]?.trim() || '';
+    let state = '';
+    let zip = '';
+
+    if (parts.length >= 2) {
+      const stateZip = parts[1].trim();
+      const stateZipParts = stateZip.split(/\s+/);
+      state = stateZipParts[0] || '';
+      zip = stateZipParts[1] || '';
+    }
+
+    return { city, state, zip };
+  }
+
   function updateSummaryStats() {
     if (!allRows || allRows.length === 0) return;
 
@@ -2410,17 +2470,20 @@
       }
     });
 
-    const topAreas = Object.entries(areaStats)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5);
+    // Store areas data with parsed location info
+    topAreasData = Object.entries(areaStats).map(([area, count]) => {
+      const parsed = parseLocationData(area);
+      return {
+        location: area,
+        count,
+        city: parsed.city,
+        state: parsed.state,
+        zip: parsed.zip
+      };
+    });
 
-    const topAreasHtml = topAreas.map(([area, count]) => `
-      <div class="summary-item">
-        <span class="summary-item-label">${escapeHtml(area)}</span>
-        <span class="summary-item-value">${count}</span>
-      </div>
-    `).join('');
-    document.getElementById('details-top-areas-list').innerHTML = topAreasHtml || '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
+    // Sort by current mode and display
+    renderTopAreas();
 
     // Average Order Value - look for Item Cost or Total fields
     let totalValue = 0;
@@ -2454,9 +2517,7 @@
         if (key && row[key]) {
           const itemName = String(row[key]).trim();
           if (itemName && itemName.length > 0) {
-            // Truncate very long descriptions to first meaningful part
-            const displayName = itemName.length > 60 ? itemName.substring(0, 57) + '...' : itemName;
-            itemStats[displayName] = (itemStats[displayName] || 0) + 1;
+            itemStats[itemName] = (itemStats[itemName] || 0) + 1;
             break;
           }
         }
@@ -2474,6 +2535,46 @@
       </div>
     `).join('');
     document.getElementById('details-top-items-list').innerHTML = topItemsHtml || '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
+  }
+
+  function renderTopAreas() {
+    if (!topAreasData || topAreasData.length === 0) {
+      document.getElementById('details-top-areas-list').innerHTML = '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
+      return;
+    }
+
+    // Sort based on current mode
+    let sorted = [...topAreasData];
+    if (topAreasSortMode === 'city') {
+      sorted.sort((a, b) => a.city.localeCompare(b.city));
+    } else if (topAreasSortMode === 'state') {
+      sorted.sort((a, b) => a.state.localeCompare(b.state));
+    } else {
+      // Default: sort by count (descending)
+      sorted.sort((a, b) => b.count - a.count);
+    }
+
+    const topAreasHtml = sorted.slice(0, 5).map(area => `
+      <div class="summary-item">
+        <span class="summary-item-label">${escapeHtml(area.location)}</span>
+        <span class="summary-item-value">${area.count}</span>
+      </div>
+    `).join('');
+
+    document.getElementById('details-top-areas-list').innerHTML = topAreasHtml || '<div class="summary-item"><span class="summary-item-label">No data</span></div>';
+  }
+
+  function sortTopAreas(mode) {
+    topAreasSortMode = mode;
+
+    // Update button states
+    document.querySelectorAll('#areas-sort-controls .summary-sort-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    // Re-render with new sort
+    renderTopAreas();
   }
 
   let filteredOrdersData = [];
