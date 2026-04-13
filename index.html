@@ -2332,14 +2332,19 @@
     }
   }
 
-  function pointInPolygon(point, polygon) {
-    const [lat, lng] = point;
+  function pointInPolygon(lat, lng, polygon) {
+    let coords = polygon.getLatLngs();
+    // Handle nested arrays (polygons with holes)
+    if (coords && coords.length > 0 && Array.isArray(coords[0])) {
+      coords = coords[0];
+    }
+
     let inside = false;
-    const coords = polygon.getLatLngs();
     for (let i = 0, j = coords.length - 1; i < coords.length; j = i++) {
-      const latI = coords[i].lat, lngI = coords[i].lng;
-      const latJ = coords[j].lat, lngJ = coords[j].lng;
-      const intersect = ((lngI > lng) !== (lngJ > lng)) && (lat < ((latJ - latI) * (lng - lngI) / (lngJ - lngI) + latI));
+      const xi = coords[i].lat, yi = coords[i].lng;
+      const xj = coords[j].lat, yj = coords[j].lng;
+
+      const intersect = ((yi > lng) !== (yj > lng)) && (lat < ((xj - xi) * (lng - yi) / (yj - yi) + xi));
       if (intersect) inside = !inside;
     }
     return inside;
@@ -2497,12 +2502,20 @@
 
     // Count points in polygon
     let count = 0;
+    const bounds = layer.getBounds();
+
     currentPts.forEach(point => {
-      if (pointInPolygon([point[0], point[1]], layer)) {
-        count++;
+      const lat = point[0];
+      const lng = point[1];
+      // First check bounds for quick rejection
+      if (bounds.contains([lat, lng])) {
+        if (pointInPolygon(lat, lng, layer)) {
+          count++;
+        }
       }
     });
 
+    console.log(`Territory created with ${count} orders out of ${currentPts.length} total points`);
     layer.bindPopup(`<strong>Territory</strong><br>${count} orders`).openPopup();
     territories.push({ layer, count });
     updateTerritoryInfo();
