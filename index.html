@@ -2333,13 +2333,13 @@
   }
 
   function pointInPolygon(point, polygon) {
-    const [x, y] = point;
+    const [lat, lng] = point;
     let inside = false;
     const coords = polygon.getLatLngs();
     for (let i = 0, j = coords.length - 1; i < coords.length; j = i++) {
-      const xi = coords[i].lat, yi = coords[i].lng;
-      const xj = coords[j].lat, yj = coords[j].lng;
-      const intersect = ((yi > y) !== (yj > y)) && (x < ((xj - xi) * (y - yi) / (yj - yi) + xi));
+      const latI = coords[i].lat, lngI = coords[i].lng;
+      const latJ = coords[j].lat, lngJ = coords[j].lng;
+      const intersect = ((lngI > lng) !== (lngJ > lng)) && (lat < ((latJ - latI) * (lng - lngI) / (lngJ - lngI) + latI));
       if (intersect) inside = !inside;
     }
     return inside;
